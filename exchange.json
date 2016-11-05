@@ -1,0 +1,7 @@
+{
+	"Logfile" : "exchange.log",
+	"ExchangeServiceConfig" : {
+		"Url" : "http://localhost",
+		"Port" : 6288
+	}
+}
