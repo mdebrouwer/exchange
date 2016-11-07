@@ -4,3 +4,6 @@
 /.deps
 /vendor
 /tools
+/node_modules
+/bundle
+/service/bindata.go

@@ -24,7 +24,7 @@ func NewExchangeService(logger log.Logger, cfg *ExchangeServiceConfig) *Exchange
 func (s *ExchangeService) Start() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/order/", s.orderHandler)
-	mux.Handle("/", http.FileServer(&assetfs.AssetFS{Asset: Asset, AssetDir: AssetDir, AssetInfo: AssetInfo, Prefix: "static"}))
+	mux.Handle("/", http.FileServer(&assetfs.AssetFS{Asset: Asset, AssetDir: AssetDir, AssetInfo: AssetInfo, Prefix: "bundle"}))
 
 	s.logger.Printf("Listening on port: %v\n", s.cfg.Port)
 	http.ListenAndServe(fmt.Sprintf(":%v", s.cfg.Port), mux)
