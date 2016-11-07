@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/elazarl/go-bindata-assetfs"
+
 	"github.com/mdebrouwer/exchange/log"
 )
 
@@ -22,15 +24,7 @@ func NewExchangeService(logger log.Logger, cfg *ExchangeServiceConfig) *Exchange
 func (s *ExchangeService) Start() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/order/", s.orderHandler)
-	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		// The "/" pattern matches everything, so we need to check
-		// that we're at the root here.
-		if req.URL.Path != "/" {
-			http.NotFound(w, req)
-			return
-		}
-		fmt.Fprintf(w, "Welcome to the home page!")
-	})
+	mux.Handle("/", http.FileServer(&assetfs.AssetFS{Asset: Asset, AssetDir: AssetDir, AssetInfo: AssetInfo, Prefix: "static"}))
 
 	s.logger.Printf("Listening on port: %v\n", s.cfg.Port)
 	http.ListenAndServe(fmt.Sprintf(":%v", s.cfg.Port), mux)

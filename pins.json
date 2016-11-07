@@ -1,4 +1,16 @@
 {
+	"./vendor/github.com/elazarl/go-bindata-assetfs": {
+		"vcs": "git",
+		"url": "https://github.com/elazarl/go-bindata-assetfs.git",
+		"ref": "9a6736ed45b44bf3835afeebb3034b57ed329f3e",
+		"dir": ""
+	},
+	"./vendor/github.com/jteeuwen/go-bindata": {
+		"vcs": "git",
+		"url": "https://github.com/jteeuwen/go-bindata.git",
+		"ref": "a0ff2567cfb70903282db057e799fd826784d41d",
+		"dir": ""
+	},
 	"./vendor/github.com/onsi/ginkgo": {
 		"vcs": "git",
 		"url": "https://github.com/onsi/ginkgo.git",

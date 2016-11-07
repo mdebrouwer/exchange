@@ -16,5 +16,17 @@
 		"url": "https://github.com/go-yaml/yaml.git",
 		"ref": "",
 		"dir": ""
+	},
+	"./vendor/github.com/jteeuwen/go-bindata": {
+		"vcs": "git",
+		"url": "https://github.com/jteeuwen/go-bindata.git",
+		"ref": "",
+		"dir": ""
+	},
+	"./vendor/github.com/elazarl/go-bindata-assetfs": {
+		"vcs": "git",
+		"url": "https://github.com/elazarl/go-bindata-assetfs.git",
+		"ref": "",
+		"dir": ""
 	}
 }

@@ -8,7 +8,7 @@ SOURCE := $(shell find . -name '*.go' | grep -v vendor)
 default: vet test build
 
 clean:
-	rm -rf tools .deps vendor
+	rm -rf ./tools ./.deps ./vendor ./service/bindata.go
 
 vet:
 	$(GOLANG) go tool vet $(SOURCE)
@@ -18,8 +18,11 @@ test: tools/ginkgo
 
 build: exchange
 
-exchange: $(SOURCE)
+exchange: $(SOURCE) service/bindata.go
 	$(GOLANG) go build
+
+service/bindata.go: tools/go-bindata static/index.html
+	./tools/go-bindata -pkg service -o service/bindata.go static/
 
 tools/courier:
 	mkdir -p tools
@@ -29,6 +32,10 @@ tools/courier:
 tools/ginkgo: .deps
 	mkdir -p tools
 	$(GOLANG) go build -o ./tools/ginkgo ./vendor/github.com/onsi/ginkgo/ginkgo
+
+tools/go-bindata: .deps
+	mkdir -p tools
+	$(GOLANG) go build -o ./tools/go-bindata ./vendor/github.com/jteeuwen/go-bindata/go-bindata
 
 .deps: tools/courier pins.json
 	rm -rf vendor
