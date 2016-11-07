@@ -1,0 +1,20 @@
+{
+	"./vendor/github.com/onsi/ginkgo": {
+		"vcs": "git",
+		"url": "https://github.com/onsi/ginkgo.git",
+		"ref": "",
+		"dir": ""
+	},
+	"./vendor/github.com/onsi/gomega": {
+		"vcs": "git",
+		"url": "https://github.com/onsi/gomega.git",
+		"ref": "",
+		"dir": ""
+	},
+	"./vendor/gopkg.in/yaml.v2": {
+		"vcs": "git",
+		"url": "https://github.com/go-yaml/yaml.git",
+		"ref": "",
+		"dir": ""
+	}
+}

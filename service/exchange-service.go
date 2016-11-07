@@ -4,17 +4,17 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/mdebrouwer/glog"
+	"github.com/mdebrouwer/exchange/log"
 )
 
 type ExchangeService struct {
-	log *glog.Log
-	cfg *ExchangeServiceConfig
+	logger log.Logger
+	cfg    *ExchangeServiceConfig
 }
 
-func NewExchangeService(log *glog.Log, cfg *ExchangeServiceConfig) *ExchangeService {
+func NewExchangeService(logger log.Logger, cfg *ExchangeServiceConfig) *ExchangeService {
 	s := new(ExchangeService)
-	s.log = log
+	s.logger = logger
 	s.cfg = cfg
 	return s
 }
@@ -32,12 +32,12 @@ func (s *ExchangeService) Start() {
 		fmt.Fprintf(w, "Welcome to the home page!")
 	})
 
-	s.log.Infof("Listening on port %v:", s.cfg.Port)
+	s.logger.Printf("Listening on port: %v\n", s.cfg.Port)
 	http.ListenAndServe(fmt.Sprintf(":%v", s.cfg.Port), mux)
 }
 
 func (s *ExchangeService) orderHandler(w http.ResponseWriter, r *http.Request) {
-	s.log.Infof("Handling Order Request")
+	s.logger.Println("Handling Order Request")
 	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
 }
 

@@ -1,11 +1,11 @@
 package orderbook
 
 import (
-	"github.com/mdebrouwer/glog"
+	"github.com/mdebrouwer/exchange/log"
 )
 
 type Orderbook struct {
-	log        *glog.Log
+	logger     log.Logger
 	instrument string
 	tickSize   float32
 	orderbook  map[float32]*PriceLevel
@@ -13,9 +13,9 @@ type Orderbook struct {
 	bestAsk    *PriceLevel
 }
 
-func NewOrderbook(log *glog.Log, instrument string, tickSize float32) *Orderbook {
+func NewOrderbook(logger log.Logger, instrument string, tickSize float32) *Orderbook {
 	ob := new(Orderbook)
-	ob.log = log
+	ob.logger = logger
 	ob.instrument = instrument
 	ob.tickSize = tickSize
 	ob.orderbook = make(map[float32]*PriceLevel)

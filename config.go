@@ -2,22 +2,22 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 
-	svc "github.com/mdebrouwer/exchange/service"
+	"github.com/mdebrouwer/exchange/service"
 )
 
 type Config struct {
-	Logfile               string                     `json:"Logfile"`
-	ExchangeServiceConfig *svc.ExchangeServiceConfig `json:"ExchangeServiceConfig"`
+	Logfile               string                         `json:"Logfile"`
+	ExchangeServiceConfig *service.ExchangeServiceConfig `json:"ExchangeServiceConfig"`
 }
 
 func NewConfigFromFile(configFile *string) *Config {
 	raw, err := ioutil.ReadFile(*configFile)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Fprintf(os.Stderr, "Error opening file: %v", err)
 		os.Exit(1)
 	}
 
@@ -26,7 +26,7 @@ func NewConfigFromFile(configFile *string) *Config {
 	return cfg
 }
 
-func NewConfig(logfile string, exchangeConfig *svc.ExchangeServiceConfig) *Config {
+func NewConfig(logfile string, exchangeConfig *service.ExchangeServiceConfig) *Config {
 	cfg := new(Config)
 	cfg.Logfile = logfile
 	cfg.ExchangeServiceConfig = exchangeConfig

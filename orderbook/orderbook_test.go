@@ -4,8 +4,10 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
+	"io/ioutil"
+	"log"
+
 	ob "github.com/mdebrouwer/exchange/orderbook"
-	"github.com/mdebrouwer/glog"
 )
 
 var _ = Describe("OrderBook", func() {
@@ -14,9 +16,8 @@ var _ = Describe("OrderBook", func() {
 	)
 
 	BeforeEach(func() {
-		var log = glog.NewLogger("test.log")
 		var cfg = ob.NewOrderBookConfig("TEST_INSTRUMENT", 10)
-		orderbook = ob.NewOrderbook(log, cfg.Instrument, cfg.TickSize)
+		orderbook = ob.NewOrderbook(log.New(ioutil.Discard, "", 0), cfg.Instrument, cfg.TickSize)
 	})
 
 	Describe("Inserting a new Order to empty Orderbook", func() {

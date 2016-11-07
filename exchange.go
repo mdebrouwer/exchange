@@ -9,18 +9,18 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/mdebrouwer/exchange/log"
 	svc "github.com/mdebrouwer/exchange/service"
-	"github.com/mdebrouwer/glog"
 )
 
 func main() {
 	var cfg = getConfig()
-	var log = glog.NewLogger(cfg.Logfile)
+	var logger = log.NewLogger(cfg.Logfile)
 
-	log.Infof("Configuration: %+v", cfg)
+	logger.Printf("Configuration: %+v\n", cfg)
 
-	log.Info("Service starting...")
-	var s = svc.NewExchangeService(log, cfg.ExchangeServiceConfig)
+	logger.Println("Service starting...")
+	var s = svc.NewExchangeService(logger, cfg.ExchangeServiceConfig)
 	s.Start()
 
 	sigs := make(chan os.Signal, 1)
@@ -28,14 +28,14 @@ func main() {
 	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
 	go func() {
 		sig := <-sigs
-		log.Infof("Signal received [%v].\n", sig)
+		logger.Printf("Signal received [%v].\n", sig)
 		s.Stop()
 		done <- true
 	}()
 
 	<-done
 
-	log.Info("Service exiting.")
+	logger.Println("Service exiting.")
 	os.Exit(0)
 }
 
