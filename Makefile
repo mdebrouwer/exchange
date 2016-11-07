@@ -4,6 +4,7 @@ GOLANG := docker run --rm -it -v "`pwd`:$(MAPPED_PATH)" -e "GOPATH=/workspace" -
 GO_SOURCE := $(shell find . -name '*.go' | grep -v vendor)
 NODE := docker run --rm -it -v "`pwd`:/workspace" -w "/workspace" node:7.0.0
 JS_SOURCE := $(shell find static -name '*.js')
+LESS_SOURCE := $(shell find static -name '*.less')
 
 .PHONY: clean test
 
@@ -30,7 +31,7 @@ bundle/index.html: static/index.html
 	mkdir -p bundle
 	cp static/index.html bundle/index.html
 
-bundle/bundle.js: $(JS_SOURCE) .deps webpack.config.js
+bundle/bundle.js: $(JS_SOURCE) $(LESS_SOURCE) .deps webpack.config.js
 	mkdir -p bundle
 	$(NODE) ./node_modules/.bin/webpack
 

@@ -1,6 +1,7 @@
 var path = require('path')
 
 module.exports = {
+	devtool: 'source-map',
 	entry: './static/index.js',
 	output: {
 		path: path.resolve(__dirname, 'bundle'),
@@ -15,6 +16,10 @@ module.exports = {
 				{
 					presets:['es2015']
 				}
+			},
+			{
+				test: /\.less$/,
+				loader: 'style!css!less'
 			}
 		]
 	}
