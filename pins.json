@@ -5,6 +5,12 @@
 		"ref": "9a6736ed45b44bf3835afeebb3034b57ed329f3e",
 		"dir": ""
 	},
+	"./vendor/github.com/gorilla/mux": {
+		"vcs": "git",
+		"url": "https://github.com/gorilla/mux.git",
+		"ref": "757bef944d0f21880861c2dd9c871ca543023cba",
+		"dir": ""
+	},
 	"./vendor/github.com/jteeuwen/go-bindata": {
 		"vcs": "git",
 		"url": "https://github.com/jteeuwen/go-bindata.git",

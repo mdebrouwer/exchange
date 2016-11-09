@@ -13,6 +13,10 @@ default: vet test build
 clean:
 	rm -rf ./tools ./.deps ./vendor ./node_modules ./bundle ./service/bindata.go
 
+dev:
+	# Not using docker container: https://github.com/nodejs/node/issues/4182
+	./node_modules/.bin/webpack-dev-server --content-base static/ --host 0.0.0.0 --watch-poll
+
 vet:
 	$(GOLANG) go tool vet $(GO_SOURCE)
 
@@ -24,15 +28,15 @@ build: exchange
 exchange: $(GO_SOURCE) service/bindata.go
 	$(GOLANG) go build
 
-service/bindata.go: tools/go-bindata bundle/index.html bundle/bundle.js
-	./tools/go-bindata -pkg service -o service/bindata.go bundle/
+service/bindata.go: tools/go-bindata bundle/index.html bundle/assets/bundle.js
+	./tools/go-bindata -pkg service -o service/bindata.go bundle/...
 
 bundle/index.html: static/index.html
 	mkdir -p bundle
 	cp static/index.html bundle/index.html
 
-bundle/bundle.js: $(JS_SOURCE) $(LESS_SOURCE) .deps webpack.config.js
-	mkdir -p bundle
+bundle/assets/bundle.js: $(JS_SOURCE) $(LESS_SOURCE) .deps webpack.config.js
+	mkdir -p bundle/assets
 	$(NODE) ./node_modules/.bin/webpack
 
 tools/courier:

@@ -28,5 +28,11 @@
 		"url": "https://github.com/elazarl/go-bindata-assetfs.git",
 		"ref": "",
 		"dir": ""
+	},
+	"./vendor/github.com/gorilla/mux": {
+		"vcs": "git",
+		"url": "https://github.com/gorilla/mux.git",
+		"ref": "",
+		"dir": ""
 	}
 }
