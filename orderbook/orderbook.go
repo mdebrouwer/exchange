@@ -6,19 +6,17 @@ import (
 
 type Orderbook struct {
 	logger     log.Logger
-	instrument string
-	tickSize   float32
-	orderbook  map[float32]*PriceLevel
+	instrument Instrument
+	orderbook  map[TickSize]*PriceLevel
 	bestBid    *PriceLevel
 	bestAsk    *PriceLevel
 }
 
-func NewOrderbook(logger log.Logger, instrument string, tickSize float32) *Orderbook {
+func NewOrderbook(logger log.Logger, instrument Instrument) *Orderbook {
 	ob := new(Orderbook)
 	ob.logger = logger
 	ob.instrument = instrument
-	ob.tickSize = tickSize
-	ob.orderbook = make(map[float32]*PriceLevel)
+	ob.orderbook = make(map[TickSize]*PriceLevel)
 	return ob
 }
 
