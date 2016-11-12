@@ -41,6 +41,9 @@ var _ = Describe("PriceLevel", func() {
 			It("should not error", func() {
 				Expect(err).NotTo(HaveOccurred())
 			})
+			It("should not cause trades", func() {
+				Expect(trades).Should(BeNil())
+			})
 			It("should be added to the PriceLevel and available from GetBids", func() {
 				var bids = priceLevel.GetBids()
 				Expect(bids).ShouldNot(BeNil())
@@ -59,14 +62,21 @@ var _ = Describe("PriceLevel", func() {
 			BeforeEach(func() {
 				trades, err = priceLevel.InsertOrder(ob.NewOrder("CPTY1", ob.SELL, 100, 1))
 			})
+
 			It("should not error", func() {
 				Expect(err).NotTo(HaveOccurred())
 			})
+
+			It("should not cause trades", func() {
+				Expect(trades).Should(BeNil())
+			})
+
 			It("should be added to the PriceLevel and available from GetAsks", func() {
 				var asks = priceLevel.GetAsks()
 				Expect(asks).ShouldNot(BeNil())
 				Expect(len(asks)).To(Equal(1))
 			})
+
 			It("should be added to the PriceLevel and not available from GetBids", func() {
 				var bids = priceLevel.GetBids()
 				Expect(bids).ShouldNot(BeNil())
@@ -80,18 +90,78 @@ var _ = Describe("PriceLevel", func() {
 			BeforeEach(func() {
 				trades, err = priceLevel.InsertOrder(ob.NewOrder("CPTY1", ob.SELL, 101, 1))
 			})
+
 			It("should error", func() {
 				Expect(err).To(HaveOccurred())
 			})
+
+			It("should not cause trades", func() {
+				Expect(trades).Should(BeNil())
+			})
+
 			It("not be available from GetBids", func() {
 				var bids = priceLevel.GetBids()
 				Expect(bids).ShouldNot(BeNil())
 				Expect(len(bids)).To(Equal(0))
 			})
+
 			It("not available from GetAsks", func() {
 				var asks = priceLevel.GetAsks()
 				Expect(asks).ShouldNot(BeNil())
 				Expect(len(asks)).To(Equal(0))
+			})
+		})
+	})
+
+	Describe("Deleting an Order", func() {
+		var err error
+		var buyOrder *ob.Order = ob.NewOrder("CPTY2", ob.BUY, 100, 1)
+		var sellOrder *ob.Order = ob.NewOrder("CPTY2", ob.SELL, 101, 1)
+		BeforeEach(func() {
+			_, err = priceLevel.InsertOrder(buyOrder)
+			_, err = priceLevel.InsertOrder(sellOrder)
+		})
+
+		Context("If side is BUY", func() {
+			var err error
+			BeforeEach(func() {
+				err = priceLevel.DeleteOrder(buyOrder.OrderId())
+			})
+
+			It("should not error", func() {
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("should be removed from the PriceLevel and not available from GetBids", func() {
+				var bids = priceLevel.GetBids()
+				Expect(len(bids)).To(Equal(0))
+			})
+		})
+
+		Context("If side is SELL", func() {
+			var err error
+			BeforeEach(func() {
+				err = priceLevel.DeleteOrder(sellOrder.OrderId())
+			})
+
+			It("should not error", func() {
+				Expect(err).NotTo(HaveOccurred())
+			})
+
+			It("should be removed from the PriceLevel and not available from GetAsks", func() {
+				var asks = priceLevel.GetAsks()
+				Expect(len(asks)).To(Equal(0))
+			})
+		})
+
+		Context("If the Order does not exist", func() {
+			var err error
+			BeforeEach(func() {
+				err = priceLevel.DeleteOrder(7)
+			})
+
+			It("should error", func() {
+				Expect(err).To(HaveOccurred())
 			})
 		})
 	})
