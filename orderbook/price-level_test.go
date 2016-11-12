@@ -34,8 +34,9 @@ var _ = Describe("PriceLevel", func() {
 	Describe("Inserting a new Order to empty PriceLevel", func() {
 		Context("If side is BUY", func() {
 			var err error
+			var trades []*ob.Trade
 			BeforeEach(func() {
-				err = priceLevel.InsertOrder(ob.NewOrder(1, "CPTY1", ob.BUY, 100, 1))
+				trades, err = priceLevel.InsertOrder(ob.NewOrder("CPTY1", ob.BUY, 100, 1))
 			})
 			It("should not error", func() {
 				Expect(err).NotTo(HaveOccurred())
@@ -54,8 +55,9 @@ var _ = Describe("PriceLevel", func() {
 
 		Context("If side is SELL", func() {
 			var err error
+			var trades []*ob.Trade
 			BeforeEach(func() {
-				err = priceLevel.InsertOrder(ob.NewOrder(1, "CPTY1", ob.SELL, 100, 1))
+				trades, err = priceLevel.InsertOrder(ob.NewOrder("CPTY1", ob.SELL, 100, 1))
 			})
 			It("should not error", func() {
 				Expect(err).NotTo(HaveOccurred())
@@ -74,8 +76,9 @@ var _ = Describe("PriceLevel", func() {
 
 		Context("If the Order price does not match the level", func() {
 			var err error
+			var trades []*ob.Trade
 			BeforeEach(func() {
-				err = priceLevel.InsertOrder(ob.NewOrder(1, "CPTY1", ob.SELL, 101, 1))
+				trades, err = priceLevel.InsertOrder(ob.NewOrder("CPTY1", ob.SELL, 101, 1))
 			})
 			It("should error", func() {
 				Expect(err).To(HaveOccurred())
