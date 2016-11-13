@@ -1,8 +1,8 @@
 package orderbook
 
 import (
-	"time"
 	"errors"
+	"time"
 )
 
 type OrderId int64
@@ -23,13 +23,13 @@ type Order struct {
 func NewOrder(counterparty string, side Side, price float32, volume float64) Order {
 	now := time.Now()
 	return Order{
-		orderId: OrderId(now.UnixNano()), //TODO: Create unique id
+		orderId:      OrderId(now.UnixNano()), //TODO: Create unique id
 		creationTime: now,
-		version: 1,
+		version:      1,
 		counterparty: counterparty,
-		side: side,
-		price: price,
-		volume: volume,
+		side:         side,
+		price:        price,
+		volume:       volume,
 	}
 }
 

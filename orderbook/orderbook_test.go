@@ -15,7 +15,7 @@ var _ = Describe("OrderBook", func() {
 
 	BeforeEach(func() {
 		instrument := ob.NewInstrument("TEST_INSTRUMENT", 10)
-		orderbook = ob.NewOrderbook(log.New(ioutil.Discard, "", 0), *instrument)
+		orderbook = ob.NewOrderbook(log.New(ioutil.Discard, "", 0), instrument)
 	})
 
 	Describe("Inserting a new Order to empty Orderbook", func() {
