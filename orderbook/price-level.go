@@ -15,8 +15,8 @@ type PriceLevel struct {
 func NewPriceLevel(price float32) *PriceLevel {
 	pl := new(PriceLevel)
 	pl.price = price
-	pl.bids = make([]*Order, 0, 1)
-	pl.asks = make([]*Order, 0, 1)
+	pl.bids = make([]*Order, 0)
+	pl.asks = make([]*Order, 0)
 	return pl
 }
 
@@ -51,7 +51,7 @@ func (pl *PriceLevel) InsertOrder(order *Order) ([]*Trade, error) {
 		}
 	}
 
-	return nil, nil
+	return make([]*Trade, 0), nil
 }
 
 func (pl *PriceLevel) AmendOrder(amendOrder Order, volume float64) error {
@@ -87,7 +87,7 @@ func (pl *PriceLevel) DeleteOrder(orderId OrderId) error {
 	if order.side == BUY {
 		pl.bids = append(pl.bids[:index], pl.bids[index+1:]...)
 	} else if order.side == SELL {
-		pl.bids = append(pl.asks[:index], pl.asks[index+1:]...)
+		pl.asks = append(pl.asks[:index], pl.asks[index+1:]...)
 	}
 
 	return nil
