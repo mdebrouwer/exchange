@@ -2,7 +2,7 @@ PACKAGE := github.com/mdebrouwer/exchange
 MAPPED_PATH := /workspace/src/$(PACKAGE)
 GOLANG := docker run --rm -it -v "`pwd`:$(MAPPED_PATH)" -e "GOPATH=/workspace" -w "$(MAPPED_PATH)" golang:1.7.3
 GO_SOURCE := $(shell find . -name '*.go' | grep -v vendor)
-NODE := docker run --rm -it -v "`pwd`:/workspace" -w "/workspace" node:7.0.0
+NODE := docker run --rm -it -v "`pwd`:/workspace" -w "/workspace" node:7.1.0
 JS_SOURCE := $(shell find static -name '*.js')
 LESS_SOURCE := $(shell find static -name '*.less')
 
