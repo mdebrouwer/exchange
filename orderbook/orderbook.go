@@ -4,42 +4,51 @@ import (
 	"github.com/mdebrouwer/exchange/log"
 )
 
-type Orderbook struct {
-	logger     log.Logger
-	instrument Instrument
-	orderbook  map[TickSize]*PriceLevel
-	bestBid    *PriceLevel
-	bestAsk    *PriceLevel
+type Orderbook interface {
+	InsertOrder(order Order) ([]Trade, error)
+	AmendOrder(order Order) error
+	DeleteOrder(order Order) error
+	GetTopLevel() (PriceLevel, PriceLevel)
+	GetBestBid() PriceLevel
+	GetBestAsk() PriceLevel
 }
 
-func NewOrderbook(logger log.Logger, instrument Instrument) *Orderbook {
-	ob := new(Orderbook)
+type orderbook struct {
+	logger     log.Logger
+	instrument Instrument
+	orderbook  map[TickSize]*priceLevel
+	bestBid    *priceLevel
+	bestAsk    *priceLevel
+}
+
+func NewOrderbook(logger log.Logger, instrument Instrument) Orderbook {
+	ob := new(orderbook)
 	ob.logger = logger
 	ob.instrument = instrument
-	ob.orderbook = make(map[TickSize]*PriceLevel)
+	ob.orderbook = make(map[TickSize]*priceLevel)
 	return ob
 }
 
-func (ob *Orderbook) InsertOrder(order Order) ([]*Trade, error) {
+func (ob *orderbook) InsertOrder(order Order) ([]Trade, error) {
 	return nil, nil
 }
 
-func (ob *Orderbook) AmendOrder(order Order) error {
+func (ob *orderbook) AmendOrder(order Order) error {
 	return nil
 }
 
-func (ob *Orderbook) DeleteOrder(order Order) error {
+func (ob *orderbook) DeleteOrder(order Order) error {
 	return nil
 }
 
-func (ob *Orderbook) GetTopLevel() (*PriceLevel, *PriceLevel) {
+func (ob *orderbook) GetTopLevel() (PriceLevel, PriceLevel) {
 	return ob.bestBid, ob.bestAsk
 }
 
-func (ob *Orderbook) GetBestBid() *PriceLevel {
+func (ob *orderbook) GetBestBid() PriceLevel {
 	return ob.bestBid
 }
 
-func (ob *Orderbook) GetBestAsk() *PriceLevel {
+func (ob *orderbook) GetBestAsk() PriceLevel {
 	return ob.bestAsk
 }

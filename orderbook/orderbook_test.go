@@ -11,9 +11,7 @@ import (
 )
 
 var _ = Describe("OrderBook", func() {
-	var (
-		orderbook *ob.Orderbook
-	)
+	var orderbook ob.Orderbook
 
 	BeforeEach(func() {
 		instrument := ob.NewInstrument("TEST_INSTRUMENT", 10)
@@ -21,6 +19,9 @@ var _ = Describe("OrderBook", func() {
 	})
 
 	Describe("Inserting a new Order to empty Orderbook", func() {
+		BeforeEach(func() {
+			orderbook.InsertOrder(ob.NewOrder("CPTY1", ob.BUY, 100, 1))
+		})
 		Context("If side is Bid", func() {
 			It("should be added to the Orderbook and available from GetBestBid", func() {
 				Expect(orderbook.GetBestBid() != nil)

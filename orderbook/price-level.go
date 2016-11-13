@@ -6,33 +6,42 @@ import (
 	"math"
 )
 
-type PriceLevel struct {
-	price float32
-	bids  []*Order
-	asks  []*Order
+type PriceLevel interface {
+	GetPrice() float32
+	GetBids() []Order
+	GetAsks() []Order
+	InsertOrder(order Order) ([]Trade, error)
+	AmendOrder(orderId OrderId, volume float64) error
+	DeleteOrder(orderId OrderId) error
 }
 
-func NewPriceLevel(price float32) *PriceLevel {
-	pl := new(PriceLevel)
+type priceLevel struct {
+	price float32
+	bids  []Order
+	asks  []Order
+}
+
+func NewPriceLevel(price float32) *priceLevel {
+	pl := new(priceLevel)
 	pl.price = price
-	pl.bids = make([]*Order, 0)
-	pl.asks = make([]*Order, 0)
+	pl.bids = make([]Order, 0)
+	pl.asks = make([]Order, 0)
 	return pl
 }
 
-func (pl *PriceLevel) GetPrice() float32 {
+func (pl *priceLevel) GetPrice() float32 {
 	return pl.price
 }
 
-func (pl *PriceLevel) GetBids() []*Order {
+func (pl *priceLevel) GetBids() []Order {
 	return pl.bids
 }
 
-func (pl *PriceLevel) GetAsks() []*Order {
+func (pl *priceLevel) GetAsks() []Order {
 	return pl.asks
 }
 
-func (pl *PriceLevel) InsertOrder(order *Order) ([]*Trade, error) {
+func (pl *priceLevel) InsertOrder(order Order) ([]Trade, error) {
 	if order.price != pl.price {
 		return nil, errors.New(fmt.Sprintf("Cannot insert order, invalid price. Price=%v, Order=%+v.", pl.price, order))
 	}
@@ -51,34 +60,36 @@ func (pl *PriceLevel) InsertOrder(order *Order) ([]*Trade, error) {
 		}
 	}
 
-	return make([]*Trade, 0), nil
+	return make([]Trade, 0), nil
 }
 
-func (pl *PriceLevel) AmendOrder(amendOrder Order, volume float64) error {
-	if amendOrder.Price() != pl.price {
-		return errors.New(fmt.Sprintf("Cannot amend order, invalid price. Price=%v, Order=%+v.", pl.price, amendOrder))
+func (pl *priceLevel) AmendOrder(orderId OrderId, volume float64) error {
+	index, order, err := pl.findOrder(orderId)
+	if err != nil {
+		return err
 	}
 
-	if volume == amendOrder.Volume() {
-		return errors.New(fmt.Sprintf("Cannot amend order, invalid volume. Price=%v, Order=%+v.", pl.price, amendOrder))
-	}
+	amendedOrder, err := order.AmendVolume(volume)
 
-	_, order, err := pl.findOrder(amendOrder.orderId)
 	if err != nil {
 		return err
 	}
 
 	if volume > order.Volume() {
 		pl.DeleteOrder(order.orderId)
-		err := order.AmendVolume(volume)
-		pl.InsertOrder(order)
-		return err
+		pl.InsertOrder(amendedOrder)
 	} else {
-		return order.AmendVolume(volume)
+		if order.side == BUY {
+			pl.bids[index] = amendedOrder
+		} else if order.side == SELL {
+			pl.asks[index] = amendedOrder
+		}
 	}
+
+	return nil
 }
 
-func (pl *PriceLevel) DeleteOrder(orderId OrderId) error {
+func (pl *priceLevel) DeleteOrder(orderId OrderId) error {
 	index, order, err := pl.findOrder(orderId)
 	if err != nil {
 		return err
@@ -93,8 +104,8 @@ func (pl *PriceLevel) DeleteOrder(orderId OrderId) error {
 	return nil
 }
 
-func (pl *PriceLevel) matchOrders(quotes []*Order, order *Order) []*Trade {
-	trades := make([]*Trade, 0, 1)
+func (pl *priceLevel) matchOrders(quotes []Order, order Order) []Trade {
+	trades := make([]Trade, 0)
 	for _, quote := range quotes {
 		var buyCpty, sellCpty string
 		if order.side == BUY {
@@ -108,7 +119,7 @@ func (pl *PriceLevel) matchOrders(quotes []*Order, order *Order) []*Trade {
 		matchedVolume := math.Min(quote.Volume(), order.Volume())
 		trade := NewTrade(order.side, buyCpty, sellCpty, pl.price, matchedVolume)
 		trades = append(trades, trade)
-		
+
 		if matchedVolume >= quote.Volume() {
 			pl.DeleteOrder(quote.orderId)
 		} else {
@@ -125,29 +136,26 @@ func (pl *PriceLevel) matchOrders(quotes []*Order, order *Order) []*Trade {
 	return trades
 }
 
-func (pl *PriceLevel) findOrder(orderId OrderId) (int, *Order, error) {
-	var index int
-	var order *Order
-	
-	if len(pl.bids) > 0 {
-		index, order = find(pl.bids, orderId)
-	} else if len(pl.asks) > 0 {
+func (pl *priceLevel) findOrder(orderId OrderId) (index int, order Order, err error) {
+	index, order = find(pl.bids, orderId)
+
+	if index == -1 {
 		index, order = find(pl.asks, orderId)
 	}
 
-	if order != nil {
-		return index, order, nil
+	if index == -1 {
+		err = errors.New(fmt.Sprintf("OrderId doesn't exist at price level. OrderId=%+v.", orderId))
 	}
 
-	return -1, nil, errors.New(fmt.Sprintf("OrderId doesn't exist at price level. OrderId=%+v.", orderId))
+	return
 }
 
-func find(orders []*Order, orderId OrderId) (int, *Order) {
+func find(orders []Order, orderId OrderId) (int, Order) {
 	for index, order := range orders {
 		if order.orderId == orderId {
 			return index, order
 		}
 	}
 
-	return -1, nil
+	return -1, Order{}
 }

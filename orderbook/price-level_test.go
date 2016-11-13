@@ -8,7 +8,7 @@ import (
 )
 
 var _ = Describe("PriceLevel", func() {
-	var priceLevel *ob.PriceLevel
+	var priceLevel ob.PriceLevel
 
 	BeforeEach(func() {
 		priceLevel = ob.NewPriceLevel(100)
@@ -29,7 +29,7 @@ var _ = Describe("PriceLevel", func() {
 	Describe("Inserting a new Order to empty PriceLevel", func() {
 		Context("If side is BUY", func() {
 			var err error
-			var trades []*ob.Trade
+			var trades []ob.Trade
 			BeforeEach(func() {
 				trades, err = priceLevel.InsertOrder(ob.NewOrder("CPTY1", ob.BUY, 100, 1))
 			})
@@ -49,7 +49,7 @@ var _ = Describe("PriceLevel", func() {
 
 		Context("If side is SELL", func() {
 			var err error
-			var trades []*ob.Trade
+			var trades []ob.Trade
 			BeforeEach(func() {
 				trades, err = priceLevel.InsertOrder(ob.NewOrder("CPTY1", ob.SELL, 100, 1))
 			})
@@ -73,7 +73,7 @@ var _ = Describe("PriceLevel", func() {
 
 		Context("If the Order price does not match the level", func() {
 			var err error
-			var trades []*ob.Trade
+			var trades []ob.Trade
 			JustBeforeEach(func() {
 				trades, err = priceLevel.InsertOrder(ob.NewOrder("CPTY1", ob.SELL, 101, 1))
 			})

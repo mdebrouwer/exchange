@@ -20,17 +20,17 @@ type Order struct {
 	volume       float64
 }
 
-func NewOrder(counterparty string, side Side, price float32, volume float64) *Order {
+func NewOrder(counterparty string, side Side, price float32, volume float64) Order {
 	now := time.Now()
-	order := new(Order)
-	order.orderId = OrderId(now.UnixNano()) //TODO: Create unique id
-	order.creationTime = now
-	order.version = 1
-	order.counterparty = counterparty
-	order.side = side
-	order.price = price
-	order.volume = volume
-	return order
+	return Order{
+		orderId: OrderId(now.UnixNano()), //TODO: Create unique id
+		creationTime: now,
+		version: 1,
+		counterparty: counterparty,
+		side: side,
+		price: price,
+		volume: volume,
+	}
 }
 
 func (o Order) OrderId() OrderId {
@@ -53,24 +53,24 @@ func (o Order) Volume() float64 {
 	return o.volume
 }
 
-func (o *Order) AmendPrice(price float32) error {
+func (o Order) AmendPrice(price float32) (Order, error) {
 	if o.version >= MaxOrderVersion {
-		return errors.New("Cannot amend price for order: MaxOrderVersion exceeded!")
+		return o, errors.New("Cannot amend price for order: MaxOrderVersion exceeded!")
 	} else {
-		o.version++	
+		o.version++
 	}
 
 	o.price = price
-	return nil
+	return o, nil
 }
 
-func (o *Order) AmendVolume(volume float64) error {
+func (o Order) AmendVolume(volume float64) (Order, error) {
 	if o.version >= MaxOrderVersion {
-		return errors.New("Cannot amend volume for order: MaxOrderVersion exceeded!")
+		return o, errors.New("Cannot amend volume for order: MaxOrderVersion exceeded!")
 	} else {
-		o.version++	
+		o.version++
 	}
-	
+
 	o.volume = volume
-	return nil
+	return o, nil
 }
