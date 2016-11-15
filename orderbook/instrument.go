@@ -18,9 +18,9 @@ func NewInstrument(name string, tickSize TickSize) Instrument {
 	return Instrument{
 		instrumentId: 0, //TODO: Create unique id
 		creationTime: time.Now(),
-		version: 1,
-		name: name,
-		tickSize: tickSize,
+		version:      1,
+		name:         name,
+		tickSize:     tickSize,
 	}
 }
 
