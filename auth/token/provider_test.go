@@ -24,6 +24,11 @@ func (s *memStore) Register(token string, user token.User) (bool, error) {
 	return !ok, nil
 }
 
+func cookies(w *httptest.ResponseRecorder) []*http.Cookie {
+	r := &http.Request{Header: http.Header{"Cookie": w.HeaderMap["Set-Cookie"]}}
+  return r.Cookies()
+}
+
 var _ = Describe("token", func() {
 	var provider auth.Provider
 
@@ -51,6 +56,37 @@ var _ = Describe("token", func() {
 
 			It("should be successful", func() {
 				Expect(response.Code).To(Equal(http.StatusCreated))
+			})
+
+			XDescribe("when performing a subsequent request", func() {
+				var subsequentReqToken string
+				var subsequentResponse *httptest.ResponseRecorder
+				JustBeforeEach(func() {
+					request := httptest.NewRequest("POST", "/sessions", strings.NewReader(subsequentReqToken))
+					for _, c := range cookies(response) {
+						request.AddCookie(c)
+					}
+					subsequentResponse = httptest.NewRecorder()
+					provider.SessionHandler()(response, request)
+				})
+
+				BeforeEach(func() {
+					subsequentReqToken = reqToken
+				})
+
+				It("should be successful", func() {
+					Expect(response.Code).To(Equal(http.StatusOK))
+				})
+
+				Describe("when the subsequent token is invalid", func() {
+					BeforeEach(func() {
+						subsequentReqToken = "some_invalid_token"
+					})
+
+					It("should not be successful", func() {
+						Expect(subsequentResponse.Code).To(Equal(http.StatusUnauthorized))
+					})
+				})
 			})
 		})
 

@@ -5,10 +5,22 @@
 		"ref": "9a6736ed45b44bf3835afeebb3034b57ed329f3e",
 		"dir": ""
 	},
+	"./vendor/github.com/gorilla/context": {
+		"vcs": "git",
+		"url": "https://github.com/gorilla/context.git",
+		"ref": "08b5f424b9271eedf6f9f0ce86cb9396ed337a42",
+		"dir": ""
+	},
 	"./vendor/github.com/gorilla/mux": {
 		"vcs": "git",
 		"url": "https://github.com/gorilla/mux.git",
 		"ref": "757bef944d0f21880861c2dd9c871ca543023cba",
+		"dir": ""
+	},
+	"./vendor/github.com/gorilla/sessions": {
+		"vcs": "git",
+		"url": "https://github.com/gorilla/sessions.git",
+		"ref": "ca9ada44574153444b00d3fd9c8559e4cc95f896",
 		"dir": ""
 	},
 	"./vendor/github.com/jteeuwen/go-bindata": {
@@ -20,13 +32,13 @@
 	"./vendor/github.com/onsi/ginkgo": {
 		"vcs": "git",
 		"url": "https://github.com/onsi/ginkgo.git",
-		"ref": "c07a44f02cf4a895e331f4f473c0943ee116c668",
+		"ref": "00054c0bb96fc880d4e0be1b90937fad438c5290",
 		"dir": ""
 	},
 	"./vendor/github.com/onsi/gomega": {
 		"vcs": "git",
 		"url": "https://github.com/onsi/gomega.git",
-		"ref": "ff4bc6b6f9f5affa66635cd04d31d2a7ee21ffd6",
+		"ref": "2b6ed62707a2f5fdf1ba9cd856cdeec6bfff6b61",
 		"dir": ""
 	},
 	"./vendor/gopkg.in/yaml.v2": {

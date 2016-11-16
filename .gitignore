@@ -1,7 +1,8 @@
 *.exe
 *.log
 /exchange
-/.deps
+/.js_deps
+/.go_deps
 /vendor
 /tools
 /node_modules
