@@ -11,7 +11,6 @@ type PriceLevel interface {
 	GetBids() []Order
 	GetAsks() []Order
 	InsertOrder(order Order) ([]Trade, error)
-	AmendOrder(orderId OrderId, volume float64) error
 	DeleteOrder(orderId OrderId) error
 }
 
@@ -63,32 +62,6 @@ func (pl *priceLevel) InsertOrder(order Order) ([]Trade, error) {
 	return make([]Trade, 0), nil
 }
 
-func (pl *priceLevel) AmendOrder(orderId OrderId, volume float64) error {
-	index, order, err := pl.findOrder(orderId)
-	if err != nil {
-		return err
-	}
-
-	amendedOrder, err := order.AmendVolume(volume)
-
-	if err != nil {
-		return err
-	}
-
-	if volume > order.Volume() {
-		pl.DeleteOrder(order.orderId)
-		pl.InsertOrder(amendedOrder)
-	} else {
-		if order.side == BUY {
-			pl.bids[index] = amendedOrder
-		} else if order.side == SELL {
-			pl.asks[index] = amendedOrder
-		}
-	}
-
-	return nil
-}
-
 func (pl *priceLevel) DeleteOrder(orderId OrderId) error {
 	index, order, err := pl.findOrder(orderId)
 	if err != nil {
@@ -123,12 +96,14 @@ func (pl *priceLevel) matchOrders(quotes []Order, order Order) []Trade {
 		if matchedVolume >= quote.Volume() {
 			pl.DeleteOrder(quote.orderId)
 		} else {
+			// TODO: Reinsert order and handle error
 			quote.AmendVolume(quote.Volume() - matchedVolume)
 		}
 
 		if matchedVolume < order.Volume() {
 			break
 		} else {
+			// TODO: Reinsert order and handle error
 			order.AmendVolume(order.Volume() - matchedVolume)
 		}
 	}

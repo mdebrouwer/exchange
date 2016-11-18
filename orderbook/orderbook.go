@@ -6,7 +6,6 @@ import (
 
 type Orderbook interface {
 	InsertOrder(order Order) ([]Trade, error)
-	AmendOrder(order Order) error
 	DeleteOrder(order Order) error
 	GetTopLevel() (PriceLevel, PriceLevel)
 	GetBestBid() PriceLevel
@@ -33,10 +32,6 @@ func NewOrderbook(logger log.Logger, instrument Instrument) Orderbook {
 func (ob *orderbook) InsertOrder(order Order) ([]Trade, error) {
 	ob.logger.Printf("Inserting order for: %s\n", order.counterparty)
 	return nil, nil
-}
-
-func (ob *orderbook) AmendOrder(order Order) error {
-	return nil
 }
 
 func (ob *orderbook) DeleteOrder(order Order) error {

@@ -53,17 +53,6 @@ func (o Order) Volume() float64 {
 	return o.volume
 }
 
-func (o Order) AmendPrice(price float32) (Order, error) {
-	if o.version >= MaxOrderVersion {
-		return o, errors.New("Cannot amend price for order: MaxOrderVersion exceeded!")
-	} else {
-		o.version++
-	}
-
-	o.price = price
-	return o, nil
-}
-
 func (o Order) AmendVolume(volume float64) (Order, error) {
 	if o.version >= MaxOrderVersion {
 		return o, errors.New("Cannot amend volume for order: MaxOrderVersion exceeded!")
