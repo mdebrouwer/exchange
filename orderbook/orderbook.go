@@ -11,6 +11,7 @@ type Orderbook interface {
 	GetTopLevel() (PriceLevel, PriceLevel)
 	GetBestBid() PriceLevel
 	GetBestAsk() PriceLevel
+	GetPriceLevels() []PriceLevel
 }
 
 type orderbook struct {
@@ -52,4 +53,8 @@ func (ob *orderbook) GetBestBid() PriceLevel {
 
 func (ob *orderbook) GetBestAsk() PriceLevel {
 	return ob.bestAsk
+}
+
+func (ob *orderbook) GetPriceLevels() []PriceLevel {
+	return make([]PriceLevel, 0)
 }
