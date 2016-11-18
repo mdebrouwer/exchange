@@ -1,47 +1,53 @@
 {
-	"./vendor/github.com/onsi/ginkgo": {
+	"vendor/github.com/onsi/ginkgo": {
 		"vcs": "git",
 		"url": "https://github.com/onsi/ginkgo.git",
 		"ref": "",
 		"dir": ""
 	},
-	"./vendor/github.com/onsi/gomega": {
+	"vendor/github.com/onsi/gomega": {
 		"vcs": "git",
 		"url": "https://github.com/onsi/gomega.git",
 		"ref": "",
 		"dir": ""
 	},
-	"./vendor/gopkg.in/yaml.v2": {
+	"vendor/gopkg.in/yaml.v2": {
 		"vcs": "git",
 		"url": "https://github.com/go-yaml/yaml.git",
 		"ref": "",
 		"dir": ""
 	},
-	"./vendor/github.com/jteeuwen/go-bindata": {
+	"vendor/github.com/jteeuwen/go-bindata": {
 		"vcs": "git",
 		"url": "https://github.com/jteeuwen/go-bindata.git",
 		"ref": "",
 		"dir": ""
 	},
-	"./vendor/github.com/elazarl/go-bindata-assetfs": {
+	"vendor/github.com/elazarl/go-bindata-assetfs": {
 		"vcs": "git",
 		"url": "https://github.com/elazarl/go-bindata-assetfs.git",
 		"ref": "",
 		"dir": ""
 	},
-	"./vendor/github.com/gorilla/mux": {
+	"vendor/github.com/gorilla/mux": {
 		"vcs": "git",
 		"url": "https://github.com/gorilla/mux.git",
 		"ref": "",
 		"dir": ""
 	},
-	"./vendor/github.com/gorilla/context": {
+	"vendor/github.com/gorilla/context": {
 		"vcs": "git",
 		"url": "https://github.com/gorilla/context.git",
 		"ref": "",
 		"dir": ""
 	},
-	"./vendor/github.com/gorilla/sessions": {
+	"vendor/github.com/gorilla/securecookie": {
+		"vcs": "git",
+		"url": "https://github.com/gorilla/securecookie.git",
+		"ref": "",
+		"dir": ""
+	},
+	"vendor/github.com/gorilla/sessions": {
 		"vcs": "git",
 		"url": "https://github.com/gorilla/sessions.git",
 		"ref": "",

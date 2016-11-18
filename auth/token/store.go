@@ -1,9 +1,11 @@
 package token
 
 type User struct {
-	Name, Email string
+	Name  string `json:"name"`
+	Email string `json:"email"`
 }
 
 type Store interface {
-	Register(token string, user User) (ok bool, err error)
+	Register(token []byte, user User) (ok bool, err error)
+	Get(token []byte) (user User, ok bool, err error)
 }
