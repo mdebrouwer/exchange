@@ -1,5 +1,6 @@
 *.exe
 *.log
+/.vagrant
 /exchange
 /.js_deps
 /.go_deps
