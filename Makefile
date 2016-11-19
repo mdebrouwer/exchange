@@ -11,7 +11,7 @@ LESS_SOURCE := $(shell find static -name '*.less')
 default: vet test build
 
 clean:
-	rm -rf ./tools ./.go_deps ./.js_deps ./vendor ./node_modules ./bundle ./service/bindata.go
+	rm -rf ./tools ./.go_deps ./.js_deps ./vendor ./node_modules ./bundle ./service/bindata.go ./keygen/keygen
 
 dev: .js_deps
 	# Not using docker container: https://github.com/nodejs/node/issues/4182
@@ -65,5 +65,5 @@ tools/go-bindata: .go_deps
 keys: keygen/keygen
 	./keygen/keygen
 
-keygen/keygen:
+keygen/keygen: .go_deps keygen/main.go
 	$(GOLANG) go build  -o ./keygen/keygen ./keygen/main.go
