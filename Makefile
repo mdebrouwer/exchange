@@ -6,7 +6,7 @@ NODE := docker run --rm -it -v "`pwd`:/workspace" -w "/workspace" node:7.1.0
 JS_SOURCE := $(shell find static -name '*.js')
 LESS_SOURCE := $(shell find static -name '*.less')
 
-.PHONY: clean test
+.PHONY: clean vet test build keys
 
 default: vet test build
 
@@ -61,3 +61,9 @@ tools/go-bindata: .go_deps
 	rm -rf vendor
 	./tools/courier -reproduce
 	touch .go_deps
+
+keys: keygen/keygen
+	./keygen/keygen
+
+keygen/keygen:
+	$(GOLANG) go build  -o ./keygen/keygen ./keygen/main.go

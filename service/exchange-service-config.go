@@ -1,13 +1,13 @@
 package service
 
 type ExchangeServiceConfig struct {
-	Url  string `json:"Url"`
-	Port int32  `json:"Port"`
+	Host       string     `json:"Host"`
+	Port       int32      `json:"Port"`
+	AuthConfig AuthConfig `json:"AuthConfig"`
 }
 
-func NewExchangeServiceConfig(url string, port int32) *ExchangeServiceConfig {
-	cfg := new(ExchangeServiceConfig)
-	cfg.Url = url
-	cfg.Port = port
-	return cfg
+type AuthConfig struct {
+	CookieSigningKey    string `json:"CookieSigningKey"`
+	CookieEncryptionKey string `json:"CookieEncryptionKey"`
+	BoltPath            string `json:"BoltPath"`
 }

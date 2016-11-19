@@ -8,6 +8,7 @@ import (
 	"github.com/elazarl/go-bindata-assetfs"
 	"github.com/gorilla/mux"
 
+	"github.com/mdebrouwer/exchange/auth/token"
 	"github.com/mdebrouwer/exchange/command"
 	"github.com/mdebrouwer/exchange/log"
 	"github.com/mdebrouwer/exchange/orderbook"
@@ -15,11 +16,11 @@ import (
 
 type ExchangeService struct {
 	logger         log.Logger
-	cfg            *ExchangeServiceConfig
+	cfg            ExchangeServiceConfig
 	commandHandler command.Handler
 }
 
-func NewExchangeService(logger log.Logger, cfg *ExchangeServiceConfig) *ExchangeService {
+func NewExchangeService(logger log.Logger, cfg ExchangeServiceConfig) *ExchangeService {
 	i := orderbook.NewInstrument("MATDEB_500", orderbook.TickSize(5))
 	ob := orderbook.NewOrderbook(logger, i)
 	s := new(ExchangeService)
@@ -29,17 +30,32 @@ func NewExchangeService(logger log.Logger, cfg *ExchangeServiceConfig) *Exchange
 	return s
 }
 
-func (s *ExchangeService) Start() {
+func (s *ExchangeService) Start() error {
 	r := mux.NewRouter()
 	r.Handle("/", http.FileServer(&assetfs.AssetFS{Asset: Asset, AssetDir: AssetDir, AssetInfo: AssetInfo, Prefix: "bundle"}))
 
 	r.PathPrefix("/assets/").Handler(http.FileServer(&assetfs.AssetFS{Asset: Asset, AssetDir: AssetDir, AssetInfo: AssetInfo, Prefix: "bundle"}))
 
+	tokens := make([]string, 0)
+	authStore, err := token.NewBoltBackedStore(s.cfg.AuthConfig.BoltPath)
+	if err != nil {
+		return err
+	}
+	auth := token.NewProvider(
+		s.cfg.AuthConfig.CookieSigningKey,
+		s.cfg.AuthConfig.CookieEncryptionKey,
+		tokens,
+		authStore,
+	)
+
 	api := r.PathPrefix("/api/").Subrouter()
 	api.HandleFunc("/orders", OrderHandler(s.commandHandler)).Methods("POST")
+	api.HandleFunc("/user", auth.UserHandler()).Methods("GET", "POST")
+	api.HandleFunc("/sessions", auth.SessionHandler()).Methods("POST")
 
-	s.logger.Printf("Listening on port: %v\n", s.cfg.Port)
-	http.ListenAndServe(fmt.Sprintf(":%v", s.cfg.Port), r)
+	bindAddress := fmt.Sprintf("%s:%v", s.cfg.Host, s.cfg.Port)
+	s.logger.Printf("Listening on: %s\n", bindAddress)
+	return http.ListenAndServe(bindAddress, r)
 }
 
 func (s *ExchangeService) Stop() {

@@ -1,6 +1,7 @@
 package token
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -17,8 +18,16 @@ type provider struct {
 	cookies *sessions.CookieStore
 }
 
-func NewProvider(signingKey, encryptionKey []byte, tokens []string, store Store) auth.Provider {
-	return &provider{tokens: tokens, store: store, cookies: sessions.NewCookieStore(signingKey, encryptionKey)}
+func NewProvider(signingKey, encryptionKey string, tokens []string, store Store) auth.Provider {
+	return &provider{tokens: tokens, store: store, cookies: sessions.NewCookieStore(toKey(signingKey), toKey(encryptionKey))}
+}
+
+func toKey(v string) []byte {
+	k, err := hex.DecodeString(v)
+	if err != nil {
+		panic(err)
+	}
+	return k
 }
 
 func (p *provider) has(value []byte) bool {

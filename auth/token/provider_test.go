@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/gorilla/context"
-	"github.com/gorilla/securecookie"
 
 	"github.com/mdebrouwer/exchange/auth"
 	"github.com/mdebrouwer/exchange/auth/token"
@@ -45,8 +44,8 @@ var _ = Describe("token", func() {
 	BeforeEach(func() {
 		store = &memStore{tokens: make(map[string]token.User)}
 		provider = token.NewProvider(
-			securecookie.GenerateRandomKey(32),
-			securecookie.GenerateRandomKey(32),
+			"698449908b8431c40f2b4feae5317cc3f136eb98480a8cc09f69c297dfef8914",
+			"1f4f34df1717552c12712eaaa65d11dc698f368ae00c3cefd4f150b5c84d8717",
 			[]string{"some_token", "some_other_token"},
 			store,
 		)

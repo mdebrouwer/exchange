@@ -10,25 +10,28 @@ import (
 )
 
 type Config struct {
-	Logfile               string                         `json:"Logfile"`
-	ExchangeServiceConfig *service.ExchangeServiceConfig `json:"ExchangeServiceConfig"`
+	Logfile               string                        `json:"Logfile"`
+	ExchangeServiceConfig service.ExchangeServiceConfig `json:"ExchangeServiceConfig"`
 }
 
-func NewConfigFromFile(configFile *string) *Config {
-	raw, err := ioutil.ReadFile(*configFile)
+func NewConfigFromFile(configFile string) (cfg Config) {
+	raw, err := ioutil.ReadFile(configFile)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error opening file: %v", err)
 		os.Exit(1)
 	}
 
-	cfg := new(Config)
-	json.Unmarshal(raw, cfg)
-	return cfg
+	err = json.Unmarshal(raw, &cfg)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error deserializing file: %v", err)
+		os.Exit(1)
+	}
+	return
 }
 
-func NewConfig(logfile string, exchangeConfig *service.ExchangeServiceConfig) *Config {
-	cfg := new(Config)
-	cfg.Logfile = logfile
-	cfg.ExchangeServiceConfig = exchangeConfig
-	return cfg
+func NewConfig(logfile string, exchangeConfig service.ExchangeServiceConfig) Config {
+	return Config{
+		Logfile:               logfile,
+		ExchangeServiceConfig: exchangeConfig,
+	}
 }

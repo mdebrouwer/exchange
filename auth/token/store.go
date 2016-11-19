@@ -1,8 +1,7 @@
 package token
 
 import (
-"encoding/json"
-	"time"
+	"encoding/json"
 
 	"github.com/boltdb/bolt"
 )
@@ -24,7 +23,7 @@ type boltBackedStore struct {
 }
 
 func NewBoltBackedStore(path string) (Store, error) {
-	db, err := bolt.Open("my.db", 0600, &bolt.Options{Timeout: 1 * time.Second})
+	db, err := bolt.Open(path, 0600, nil)
 	if err != nil {
 		return nil, err
 	}

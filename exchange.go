@@ -17,11 +17,13 @@ func main() {
 	var cfg = getConfig()
 	var logger = log.NewLogger(cfg.Logfile)
 
-	logger.Printf("Configuration: %+v\n", cfg)
-
 	logger.Println("Service starting...")
-	var s = svc.NewExchangeService(logger, cfg.ExchangeServiceConfig)
-	s.Start()
+	s := svc.NewExchangeService(logger, cfg.ExchangeServiceConfig)
+	err := s.Start()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error starting exchange service: %v", err)
+		os.Exit(1)
+	}
 
 	sigs := make(chan os.Signal, 1)
 	done := make(chan bool, 1)
@@ -36,17 +38,16 @@ func main() {
 	<-done
 
 	logger.Println("Service exiting.")
-	os.Exit(0)
 }
 
-func getConfig() *Config {
+func getConfig() Config {
 	program := os.Args[0]
 	_, file := filepath.Split(program)
 	name := strings.TrimSuffix(file, filepath.Ext(file))
-	configfile := fmt.Sprintf("%v.json", name)
+	configfile := fmt.Sprintf("%s.json", name)
 
 	cfg := flag.String("c", configfile, "config file location")
 	flag.Parse()
 
-	return NewConfigFromFile(cfg)
+	return NewConfigFromFile(*cfg)
 }

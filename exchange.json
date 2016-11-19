@@ -1,7 +1,12 @@
 {
 	"Logfile" : "exchange.log",
 	"ExchangeServiceConfig" : {
-		"Url" : "http://localhost",
-		"Port" : 6288
+		"Host" : "0.0.0.0",
+		"Port" : 6288,
+		"AuthConfig": {
+			"CookieSigningKey": "698449908b8431c40f2b4feae5317cc3f136eb98480a8cc09f69c297dfef8914",
+			"CookieEncryptionKey": "1f4f34df1717552c12712eaaa65d11dc698f368ae00c3cefd4f150b5c84d8717",
+			"BoltPath": "/tmp/exchange-bolt.db"
+		}
 	}
 }
