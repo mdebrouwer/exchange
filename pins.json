@@ -1,4 +1,10 @@
 {
+	"vendor/github.com/boltdb/bolt": {
+		"vcs": "git",
+		"url": "https://github.com/boltdb/bolt.git",
+		"ref": "315c65d4cf4f5278c73477a35fb1f9b08365d340",
+		"dir": ""
+	},
 	"vendor/github.com/elazarl/go-bindata-assetfs": {
 		"vcs": "git",
 		"url": "https://github.com/elazarl/go-bindata-assetfs.git",
@@ -44,7 +50,7 @@
 	"vendor/github.com/onsi/gomega": {
 		"vcs": "git",
 		"url": "https://github.com/onsi/gomega.git",
-		"ref": "2b6ed62707a2f5fdf1ba9cd856cdeec6bfff6b61",
+		"ref": "f1f0f388b31eca4e2cbe7a6dd8a3a1dfddda5b1c",
 		"dir": ""
 	},
 	"vendor/gopkg.in/yaml.v2": {

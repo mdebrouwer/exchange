@@ -19,7 +19,7 @@ type memStore struct {
 	tokens map[string]token.User
 }
 
-func (s *memStore) Register(token []byte, user token.User) (bool, error) {
+func (s *memStore) Register(token token.Token, user token.User) (bool, error) {
 	str := string(token)
 	_, ok := s.tokens[str]
 	if !ok {
@@ -28,7 +28,7 @@ func (s *memStore) Register(token []byte, user token.User) (bool, error) {
 	return !ok, nil
 }
 
-func (s *memStore) Get(token []byte) (user token.User, ok bool, err error) {
+func (s *memStore) Get(token token.Token) (user token.User, ok bool, err error) {
 	user, ok = s.tokens[string(token)]
 	return
 }

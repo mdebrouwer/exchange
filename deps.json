@@ -52,5 +52,11 @@
 		"url": "https://github.com/gorilla/sessions.git",
 		"ref": "",
 		"dir": ""
+	},
+	"vendor/github.com/boltdb/bolt": {
+		"vcs": "git",
+		"url": "https://github.com/boltdb/bolt.git",
+		"ref": "",
+		"dir": ""
 	}
 }
