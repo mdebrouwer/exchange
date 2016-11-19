@@ -6,6 +6,9 @@ VAGRANTFILE_API_VERSION = '2'
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = 'ubuntu/yakkety64'
+  config.vm.network 'forwarded_port', guest: 6288, host: 6288
+  config.vm.network 'forwarded_port', guest: 8080, host: 8080
+
   config.vm.synced_folder '.', '/home/ubuntu/workspace/src/github.com/mdebrouwer/exchange'
   config.vm.provision 'shell', inline: 'chown -R ubuntu:ubuntu /home/ubuntu/workspace'
 
