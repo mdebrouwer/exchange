@@ -2,6 +2,7 @@
 *.log
 /.vagrant
 /exchange
+/keygen/keygen
 /.js_deps
 /.go_deps
 /vendor
