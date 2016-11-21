@@ -36,11 +36,16 @@ func (s *ExchangeService) Start() error {
 
 	r.PathPrefix("/assets/").Handler(http.FileServer(&assetfs.AssetFS{Asset: Asset, AssetDir: AssetDir, AssetInfo: AssetInfo, Prefix: "bundle"}))
 
-	tokens := make([]string, 0)
+	tokens, err := s.cfg.AuthConfig.Tokens()
+	if err != nil {
+		return err
+	}
+
 	authStore, err := token.NewBoltBackedStore(s.cfg.AuthConfig.BoltPath)
 	if err != nil {
 		return err
 	}
+
 	auth := token.NewProvider(
 		s.cfg.AuthConfig.CookieSigningKey,
 		s.cfg.AuthConfig.CookieEncryptionKey,
