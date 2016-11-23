@@ -102,8 +102,6 @@ func (p *provider) getUserHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	w.WriteHeader(http.StatusOK)
 }
 
 func (p *provider) postUserHandler(w http.ResponseWriter, r *http.Request) {

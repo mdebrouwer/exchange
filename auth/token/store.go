@@ -32,12 +32,12 @@ func NewBoltBackedStore(path string) (Store, error) {
 
 func (s *boltBackedStore) Get(token Token) (user User, ok bool, err error) {
 	err = s.db.View(func(tx *bolt.Tx) error {
-		bucket, e := tx.CreateBucketIfNotExists([]byte("USERS"))
-		if e != nil {
-			return e
+		bucket := tx.Bucket([]byte("USERS"))
+		if bucket == nil {
+			return nil
 		}
 		data := bucket.Get(token)
-		ok = (data == nil)
+		ok = (data != nil)
 		if ok {
 			return json.Unmarshal(data, &user)
 		}
@@ -52,7 +52,7 @@ func (s *boltBackedStore) Register(token Token, user User) (ok bool, err error) 
 		if e != nil {
 			return e
 		}
-		ok = (bucket.Get(token) != nil)
+		ok = (bucket.Get(token) == nil)
 		if !ok {
 			return nil
 		}

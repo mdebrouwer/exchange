@@ -54,7 +54,7 @@ func (s *ExchangeService) Start() error {
 	)
 
 	api := r.PathPrefix("/api/").Subrouter()
-	api.HandleFunc("/orders", OrderHandler(s.commandHandler)).Methods("POST")
+	api.HandleFunc("/orders", auth.Filter(OrderHandler(s.commandHandler))).Methods("POST")
 	api.HandleFunc("/user", auth.UserHandler()).Methods("GET", "POST")
 	api.HandleFunc("/sessions", auth.SessionHandler()).Methods("POST")
 

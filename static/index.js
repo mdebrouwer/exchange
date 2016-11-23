@@ -15,7 +15,7 @@ class OrderForm extends React.Component {
 	}
 	handleSubmit(event) {
 		event.preventDefault()
-		fetch(new Request("/api/orders"), {method: 'POST', body: JSON.stringify({order: this.state.details})}).then((resp) => { console.log(resp) });
+		fetch(new Request("/api/orders"), {method: 'POST', body: JSON.stringify({order: this.state.details}), credentials: 'include'}).then((resp) => { console.log(resp) });
 	}
 	render() {
 		return e(
@@ -50,7 +50,7 @@ class UserRegistrationForm extends React.Component {
 			name: this.state.name,
 			email: this.state.email,
 		}
-		fetch(new Request("/api/user"), {method: 'POST', body: JSON.stringify(user)}).then((resp) => {
+		fetch(new Request("/api/user"), {method: 'POST', body: JSON.stringify(user), credentials: 'include'}).then((resp) => {
 			if (resp.ok) {
 				self.props.userRegistered()
 			}
@@ -64,8 +64,8 @@ class UserRegistrationForm extends React.Component {
 				onSubmit: this.handleSubmit.bind(this)
 			},
 			[
-				e(FormControl, {key: 'name', type: 'password', onChange: this.handleNameChange.bind(this)}),
-				e(FormControl, {key: 'email', type: 'password', onChange: this.handleEmailChange.bind(this)}),
+				e(FormControl, {key: 'name', type: 'text', placeholder: 'Name', onChange: this.handleNameChange.bind(this)}),
+				e(FormControl, {key: 'email', type: 'text', placeholder: 'Email', onChange: this.handleEmailChange.bind(this)}),
 				e(Button, {key: 'submit', type: 'submit'}, 'Submit')
 			]
 		);
@@ -83,7 +83,7 @@ class LoginForm extends React.Component {
 	handleSubmit(event) {
 		event.preventDefault()
 		var self = this;
-		fetch(new Request("/api/sessions"), {method: 'POST', body: this.state.token}).then((resp) => {
+		fetch(new Request("/api/sessions"), {method: 'POST', body: this.state.token, credentials: 'include'}).then((resp) => {
 			if (resp.ok) {
 				self.props.sessionCreated()
 			}
@@ -121,9 +121,9 @@ class App extends React.Component {
 	}
 	fetchUser() {
 		var self = this;
-		fetch(new Request("/api/user")).then((resp) => {
+		fetch(new Request("/api/user"), {credentials: 'include'}).then((resp) => {
 			if (resp.ok) {
-				self.setState({user: resp.body.json(), session: true, waiting: false});
+				resp.json().then((data) => { self.setState({user: data, session: true, waiting: false}) })
 			}
 			if (resp.status === 404) {
 				self.setState({session: true, waiting: false});
@@ -142,17 +142,15 @@ class App extends React.Component {
 		}
 		if (this.state.user) {
 			return e('div', {}, [
-				e('h1', {}, 'Hello ' + this.state.user),
-				e(OrderForm)
+				e('h1', {key: 'greeting'}, 'Hello ' + this.state.user.name),
+				e(OrderForm, {key: 'order-form'})
 			])
 		}
 		if (this.state.session) {
-			return e('div', {}, [
-				e(UserRegistrationForm, {userRegistered: this.fetchUser.bind(this)})
-			])
+			return e(UserRegistrationForm, {userRegistered: this.fetchUser.bind(this)});
 		}
 		return e(LoginForm, {sessionCreated: this.fetchUser.bind(this)})
 	}
 }
 
-ReactDOM.render(e(OrderForm), document.getElementById('app'));
+ReactDOM.render(e(App), document.getElementById('app'));
