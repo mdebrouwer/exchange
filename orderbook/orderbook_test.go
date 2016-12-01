@@ -127,7 +127,7 @@ var _ = Describe("OrderBook", func() {
 			BeforeEach(func() {
 				orderbook.DeleteOrder(sellOrder101)
 				orderbook.DeleteOrder(buyOrder99)
-		})
+			})
 			It("should have new top levels", func() {
 				Expect(orderbook.GetBestBid()).ShouldNot(BeNil())
 				Expect(orderbook.GetBestBid().GetPrice()).Should(Equal(98.0))
@@ -139,7 +139,7 @@ var _ = Describe("OrderBook", func() {
 			BeforeEach(func() {
 				orderbook.DeleteOrder(sellOrder103)
 				orderbook.DeleteOrder(buyOrder97)
-		})
+			})
 			It("should not have new top levels", func() {
 				Expect(orderbook.GetBestBid()).ShouldNot(BeNil())
 				Expect(orderbook.GetBestBid().GetPrice()).Should(Equal(99.0))

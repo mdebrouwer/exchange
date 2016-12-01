@@ -81,7 +81,7 @@ func (ob *orderbook) GetBestBid() PriceLevel {
 
 func (ob *orderbook) GetBestAsk() PriceLevel {
 	prices := ob.getSortedPrices()
-	for i := 0; i < len(prices) ; i++ {
+	for i := 0; i < len(prices); i++ {
 		if len(ob.orderbook[prices[i]].GetAsks()) > 0 {
 			return ob.orderbook[prices[i]]
 		}
