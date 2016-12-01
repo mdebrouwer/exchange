@@ -24,11 +24,12 @@ var _ = Describe("OrderBook", func() {
 		})
 		Context("If side is Bid", func() {
 			It("should be added to the Orderbook and available from GetBestBid", func() {
-				Expect(orderbook.GetBestBid() != nil)
+				Expect(orderbook.GetBestBid()).ShouldNot(BeNil())
+				Expect(orderbook.GetBestBid().GetBids()).ShouldNot(BeNil())
 			})
-			// It("should be added at the correct price level", func() {
-			// 	Expect(orderbook.GetBestBid().GetPrice() == 100)
-			// })
+			It("should be added at the correct price level", func() {
+				Expect(orderbook.GetBestBid().GetPrice() == 100)
+			})
 		})
 	})
 })

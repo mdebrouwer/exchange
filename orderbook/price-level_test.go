@@ -29,15 +29,11 @@ var _ = Describe("PriceLevel", func() {
 	Describe("Inserting a new Order to empty PriceLevel", func() {
 		Context("If side is BUY", func() {
 			var err error
-			var trades []ob.Trade
 			BeforeEach(func() {
-				trades, err = priceLevel.InsertOrder(ob.NewOrder("CPTY1", ob.BUY, 100, 1))
+				err = priceLevel.InsertOrder(ob.NewOrder("CPTY1", ob.BUY, 100, 1))
 			})
 			It("should not error", func() {
 				Expect(err).NotTo(HaveOccurred())
-			})
-			It("should not cause trades", func() {
-				Expect(trades).Should(BeEmpty())
 			})
 			It("should be added to the PriceLevel and available from GetBids", func() {
 				Expect(priceLevel.GetBids()).To(HaveLen(1))
@@ -49,23 +45,15 @@ var _ = Describe("PriceLevel", func() {
 
 		Context("If side is SELL", func() {
 			var err error
-			var trades []ob.Trade
 			BeforeEach(func() {
-				trades, err = priceLevel.InsertOrder(ob.NewOrder("CPTY1", ob.SELL, 100, 1))
+				err = priceLevel.InsertOrder(ob.NewOrder("CPTY1", ob.SELL, 100, 1))
 			})
-
 			It("should not error", func() {
 				Expect(err).NotTo(HaveOccurred())
 			})
-
-			It("should not cause trades", func() {
-				Expect(trades).To(BeEmpty())
-			})
-
 			It("should be added to the PriceLevel and available from GetAsks", func() {
 				Expect(priceLevel.GetAsks()).To(HaveLen(1))
 			})
-
 			It("should be added to the PriceLevel and not available from GetBids", func() {
 				Expect(priceLevel.GetBids()).To(BeEmpty())
 			})
@@ -73,23 +61,15 @@ var _ = Describe("PriceLevel", func() {
 
 		Context("If the Order price does not match the level", func() {
 			var err error
-			var trades []ob.Trade
 			JustBeforeEach(func() {
-				trades, err = priceLevel.InsertOrder(ob.NewOrder("CPTY1", ob.SELL, 101, 1))
+				err = priceLevel.InsertOrder(ob.NewOrder("CPTY1", ob.SELL, 101, 1))
 			})
-
 			It("should error", func() {
 				Expect(err).To(HaveOccurred())
 			})
-
-			It("should not cause trades", func() {
-				Expect(trades).To(BeEmpty())
-			})
-
 			It("not be available from GetBids", func() {
 				Expect(priceLevel.GetBids()).To(BeEmpty())
 			})
-
 			It("not available from GetAsks", func() {
 				Expect(priceLevel.GetAsks()).To(BeEmpty())
 			})
@@ -108,7 +88,7 @@ var _ = Describe("PriceLevel", func() {
 			BeforeEach(func() {
 				order := ob.NewOrder("CPTY2", ob.BUY, 100, 1)
 				priceLevel.InsertOrder(order)
-				orderId = order.OrderId()
+				orderId = order.GetOrderId()
 			})
 
 			It("should not error", func() {
@@ -124,7 +104,7 @@ var _ = Describe("PriceLevel", func() {
 			BeforeEach(func() {
 				order := ob.NewOrder("CPTY2", ob.SELL, 100, 1)
 				priceLevel.InsertOrder(order)
-				orderId = order.OrderId()
+				orderId = order.GetOrderId()
 			})
 
 			It("should not error", func() {

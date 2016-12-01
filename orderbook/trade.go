@@ -12,11 +12,11 @@ type Trade struct {
 	aggressorSide Side
 	buyCpty       string
 	sellCpty      string
-	price         float32
+	price         float64
 	volume        float64
 }
 
-func NewTrade(aggressorSide Side, buyCpty string, sellCpty string, price float32, volume float64) Trade {
+func NewTrade(aggressorSide Side, buyCpty string, sellCpty string, price float64, volume float64) Trade {
 	now := time.Now()
 	return Trade{
 		tradeId:       TradeId(now.UnixNano()), //TODO: Create unique id

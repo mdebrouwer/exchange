@@ -16,11 +16,11 @@ type Order struct {
 	version      OrderVersion
 	counterparty string
 	side         Side
-	price        float32
+	price        float64
 	volume       float64
 }
 
-func NewOrder(counterparty string, side Side, price float32, volume float64) Order {
+func NewOrder(counterparty string, side Side, price float64, volume float64) Order {
 	now := time.Now()
 	return Order{
 		orderId:      OrderId(now.UnixNano()), //TODO: Create unique id
@@ -33,23 +33,23 @@ func NewOrder(counterparty string, side Side, price float32, volume float64) Ord
 	}
 }
 
-func (o Order) OrderId() OrderId {
+func (o Order) GetOrderId() OrderId {
 	return o.orderId
 }
 
-func (o Order) Counterparty() string {
+func (o Order) GetCounterparty() string {
 	return o.counterparty
 }
 
-func (o Order) Side() Side {
+func (o Order) GetSide() Side {
 	return o.side
 }
 
-func (o Order) Price() float32 {
+func (o Order) GetPrice() float64 {
 	return o.price
 }
 
-func (o Order) Volume() float64 {
+func (o Order) GetVolume() float64 {
 	return o.volume
 }
 
@@ -59,7 +59,6 @@ func (o Order) AmendVolume(volume float64) (Order, error) {
 	} else {
 		o.version++
 	}
-
 	o.volume = volume
 	return o, nil
 }
