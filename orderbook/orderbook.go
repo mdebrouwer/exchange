@@ -32,12 +32,12 @@ func NewOrderbook(logger log.Logger, instrument Instrument) Orderbook {
 
 func (ob *orderbook) InsertOrder(order Order) ([]Trade, error) {
 	ob.logger.Printf("Inserting order: %s\n", order)
-	
+
 	if order.GetSide() == BUY {
 		if pl, ok := ob.orderbook[order.GetPrice()]; !ok {
-	    	pl := NewPriceLevel(order.GetPrice())
-	    	ob.orderbook[order.GetPrice()] = pl
-	    	return nil, pl.InsertOrder(order)
+			pl := NewPriceLevel(order.GetPrice())
+			ob.orderbook[order.GetPrice()] = pl
+			return nil, pl.InsertOrder(order)
 		} else {
 			return nil, pl.InsertOrder(order)
 		}
@@ -45,8 +45,8 @@ func (ob *orderbook) InsertOrder(order Order) ([]Trade, error) {
 
 	if order.GetSide() == SELL {
 		if pl, ok := ob.orderbook[order.GetPrice()]; !ok {
-	    	pl := NewPriceLevel(order.GetPrice())	
-	    	return nil, pl.InsertOrder(order)
+			pl := NewPriceLevel(order.GetPrice())
+			return nil, pl.InsertOrder(order)
 		} else {
 			return nil, pl.InsertOrder(order)
 		}
@@ -59,7 +59,7 @@ func (ob *orderbook) DeleteOrder(order Order) error {
 	ob.logger.Printf("Deleting order: %s\n", order)
 
 	if pricelevel, ok := ob.orderbook[order.GetPrice()]; ok {
-    	return pricelevel.DeleteOrder(order.GetOrderId())
+		return pricelevel.DeleteOrder(order.GetOrderId())
 	}
 	return errors.New("Cannot delete order: PriceLevel does not exist!")
 }
@@ -90,18 +90,18 @@ func (ob *orderbook) GetBestAsk() PriceLevel {
 
 func (ob *orderbook) GetPriceLevels() []PriceLevel {
 	prices := ob.getSortedPrices()
-    pricelevels := make([]PriceLevel, 0)
-    for _, price := range prices {
-        pricelevels = append(pricelevels, ob.orderbook[price])
-    }
-    return pricelevels
+	pricelevels := make([]PriceLevel, 0)
+	for _, price := range prices {
+		pricelevels = append(pricelevels, ob.orderbook[price])
+	}
+	return pricelevels
 }
 
 func (ob *orderbook) getSortedPrices() []float64 {
 	var prices []float64
-    for price := range ob.orderbook {
-        prices = append(prices, price)
-    }
-    sort.Float64s(prices)
-    return prices
+	for price := range ob.orderbook {
+		prices = append(prices, price)
+	}
+	sort.Float64s(prices)
+	return prices
 }

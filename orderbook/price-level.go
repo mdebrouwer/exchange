@@ -66,17 +66,17 @@ func (pl *priceLevel) InsertOrder(order Order) error {
 func (pl *priceLevel) MatchOrders(order Order) ([]Trade, error) {
 	var quotes []Order
 	if order.GetSide() == BUY && len(pl.asks) > 0 {
-			return nil, errors.New(fmt.Sprintf("Cannot match buy order. Order=%+v.", order))
+		return nil, errors.New(fmt.Sprintf("Cannot match buy order. Order=%+v.", order))
 	} else {
 		quotes = pl.bids
 	}
-	
+
 	if order.GetSide() == SELL && len(pl.bids) > 0 {
 		return nil, errors.New(fmt.Sprintf("Cannot match sell order. Order=%+v.", order))
 	} else {
 		quotes = pl.asks
 	}
-	
+
 	trades := make([]Trade, 0)
 	for _, quote := range quotes {
 		var buyCpty, sellCpty string
