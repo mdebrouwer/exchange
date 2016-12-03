@@ -4,30 +4,36 @@ import (
 	"time"
 )
 
-type TickSize float32
+type TickSize float64
+
+func (t TickSize) Value() float64 {
+    return float64(t)
+}
+
+type InstrumentId int64
 
 type Instrument struct {
-	instrumentId int64
+	instrumentId InstrumentId
 	creationTime time.Time
 	version      int32
 	name         string
 	tickSize     TickSize
 }
 
-func NewInstrument(name string, tickSize TickSize) Instrument {
+func NewInstrument(creationTime time.Time, name string, tickSize TickSize) Instrument {
 	return Instrument{
-		instrumentId: 0, //TODO: Create unique id
-		creationTime: time.Now(),
+		instrumentId: InstrumentId(creationTime.UnixNano()), //TODO: Create unique id
+		creationTime: creationTime,
 		version:      1,
 		name:         name,
 		tickSize:     tickSize,
 	}
 }
 
-func (i Instrument) Name() string {
+func (i Instrument) GetName() string {
 	return i.name
 }
 
-func (i Instrument) TickSize() TickSize {
+func (i Instrument) GetTickSize() TickSize {
 	return i.tickSize
 }

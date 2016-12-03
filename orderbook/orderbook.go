@@ -3,6 +3,7 @@ package orderbook
 import (
 	"errors"
 	"sort"
+	"math"
 
 	"github.com/mdebrouwer/exchange/log"
 )
@@ -32,6 +33,10 @@ func NewOrderbook(logger log.Logger, instrument Instrument) Orderbook {
 
 func (ob *orderbook) InsertOrder(order Order) ([]Trade, error) {
 	ob.logger.Printf("Inserting order: %s\n", order)
+
+	if math.Mod(order.GetPrice().Value(), ob.instrument.GetTickSize().Value()) != 0 {
+		return nil, errors.New("Cannot insert order: Invalid Price!")
+	}
 
 	if order.GetSide() == BUY {
 		if pl, ok := ob.orderbook[order.GetPrice()]; !ok {

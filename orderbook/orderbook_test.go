@@ -14,10 +14,23 @@ import (
 var _ = Describe("OrderBook", func() {
 	var orderbook ob.Orderbook
 	BeforeEach(func() {
-		instrument := ob.NewInstrument("TEST_INSTRUMENT", 10)
+		instrument := ob.NewInstrument(time.Now(), "TEST_INSTRUMENT", 0.5)
 		orderbook = ob.NewOrderbook(log.New(ioutil.Discard, "", 0), instrument)
 	})
 	Describe("Inserting a new Order to empty Orderbook", func() {
+		Context("If invalid TickSize", func() {
+			var trades []ob.Trade
+			var err error
+			BeforeEach(func() {
+				trades, err = orderbook.InsertOrder(ob.NewOrder(time.Now(), "CPTY1", ob.BUY, 100.1, 1))
+			})
+			It("should error", func() {
+				Expect(err).To(HaveOccurred())
+			})
+			It("should not cause trades", func() {
+				Expect(trades).To(HaveLen(0))
+			})
+		})
 		Context("If side is Buy", func() {
 			BeforeEach(func() {
 				orderbook.InsertOrder(ob.NewOrder(time.Now(), "CPTY1", ob.BUY, 100, 1))
