@@ -4,24 +4,25 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"time"
 )
 
 type PriceLevel interface {
-	GetPrice() float64
+	GetPrice() Price
 	GetBids() []Order
 	GetAsks() []Order
 	InsertOrder(order Order) error
 	DeleteOrder(orderId OrderId) error
-	MatchOrders(order Order) ([]Trade, error)
+	MatchOrder(order Order) ([]Trade, error)
 }
 
 type priceLevel struct {
-	price float64
+	price Price
 	bids  []Order
 	asks  []Order
 }
 
-func NewPriceLevel(price float64) *priceLevel {
+func NewPriceLevel(price Price) *priceLevel {
 	pl := new(priceLevel)
 	pl.price = price
 	pl.bids = make([]Order, 0)
@@ -29,7 +30,7 @@ func NewPriceLevel(price float64) *priceLevel {
 	return pl
 }
 
-func (pl *priceLevel) GetPrice() float64 {
+func (pl *priceLevel) GetPrice() Price {
 	return pl.price
 }
 
@@ -63,24 +64,26 @@ func (pl *priceLevel) InsertOrder(order Order) error {
 	return nil
 }
 
-func (pl *priceLevel) MatchOrders(order Order) ([]Trade, error) {
+func (pl *priceLevel) MatchOrder(order Order) ([]Trade, error) {
 	var quotes []Order
-	if order.GetSide() == BUY && len(pl.asks) > 0 {
-		return nil, errors.New(fmt.Sprintf("Cannot match buy order. Order=%+v.", order))
-	} else {
-		quotes = pl.bids
-	}
-
-	if order.GetSide() == SELL && len(pl.bids) > 0 {
-		return nil, errors.New(fmt.Sprintf("Cannot match sell order. Order=%+v.", order))
-	} else {
-		quotes = pl.asks
+	if order.GetSide() == BUY {
+		if len(pl.asks) == 0 {
+			return nil, errors.New(fmt.Sprintf("Cannot match buy order. Order=%+v.", order))
+		} else {
+			quotes = pl.asks
+		}
+	} else if order.GetSide() == SELL {
+		if len(pl.bids) == 0 {
+			return nil, errors.New(fmt.Sprintf("Cannot match sell order. Order=%+v.", order))
+		} else {
+			quotes = pl.bids
+		}
 	}
 
 	trades := make([]Trade, 0)
-	for _, quote := range quotes {
+	for index, quote := range quotes {
 		var buyCpty, sellCpty string
-		if order.side == BUY {
+		if order.GetSide() == BUY {
 			buyCpty = order.GetCounterparty()
 			sellCpty = quote.GetCounterparty()
 		} else if order.GetSide() == SELL {
@@ -89,19 +92,27 @@ func (pl *priceLevel) MatchOrders(order Order) ([]Trade, error) {
 		}
 
 		matchedVolume := math.Min(quote.GetVolume(), order.GetVolume())
-		trade := NewTrade(order.side, buyCpty, sellCpty, pl.price, matchedVolume)
+		trade := NewTrade(time.Now(), order.GetSide(), buyCpty, sellCpty, pl.price, matchedVolume)
 		trades = append(trades, trade)
 
 		if matchedVolume >= quote.GetVolume() {
-			pl.DeleteOrder(quote.orderId)
+			pl.DeleteOrder(quote.GetOrderId())
 		} else {
-			quote.AmendVolume(quote.GetVolume() - matchedVolume)
+			o, err := quote.AmendVolume(quote.GetVolume() - matchedVolume)
+			if err != nil {
+				return nil, err
+			}
+			quotes[index] = o
 		}
 
-		if matchedVolume < order.GetVolume() {
+		if matchedVolume >= order.GetVolume() {
 			break
 		} else {
-			order.AmendVolume(order.GetVolume() - matchedVolume)
+			o, err := order.AmendVolume(order.GetVolume() - matchedVolume)
+			if err != nil {
+				return nil, err
+			}
+			order = o
 		}
 	}
 

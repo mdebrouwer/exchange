@@ -19,14 +19,14 @@ type Orderbook interface {
 type orderbook struct {
 	logger     log.Logger
 	instrument Instrument
-	orderbook  map[float64]*priceLevel
+	orderbook  map[Price]*priceLevel
 }
 
 func NewOrderbook(logger log.Logger, instrument Instrument) Orderbook {
 	ob := new(orderbook)
 	ob.logger = logger
 	ob.instrument = instrument
-	ob.orderbook = make(map[float64]*priceLevel)
+	ob.orderbook = make(map[Price]*priceLevel)
 	return ob
 }
 
@@ -98,11 +98,11 @@ func (ob *orderbook) GetPriceLevels() []PriceLevel {
 	return pricelevels
 }
 
-func (ob *orderbook) getSortedPrices() []float64 {
-	var prices []float64
+func (ob *orderbook) getSortedPrices() []Price {
+	var prices Prices
 	for price := range ob.orderbook {
 		prices = append(prices, price)
 	}
-	sort.Float64s(prices)
+	sort.Sort(prices)
 	return prices
 }
