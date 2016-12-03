@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/elazarl/go-bindata-assetfs"
 	"github.com/gorilla/mux"
@@ -21,7 +22,7 @@ type ExchangeService struct {
 }
 
 func NewExchangeService(logger log.Logger, cfg ExchangeServiceConfig) *ExchangeService {
-	i := orderbook.NewInstrument("MATDEB_500", orderbook.TickSize(5))
+	i := orderbook.NewInstrument(time.Now(), "MATDEB_500", orderbook.TickSize(5))
 	ob := orderbook.NewOrderbook(logger, i)
 	s := new(ExchangeService)
 	s.logger = logger

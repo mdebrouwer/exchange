@@ -2,8 +2,8 @@ package orderbook
 
 import (
 	"errors"
-	"sort"
 	"math"
+	"sort"
 
 	"github.com/mdebrouwer/exchange/log"
 )

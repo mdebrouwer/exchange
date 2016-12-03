@@ -7,7 +7,7 @@ import (
 type TickSize float64
 
 func (t TickSize) Value() float64 {
-    return float64(t)
+	return float64(t)
 }
 
 type InstrumentId int64
