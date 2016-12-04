@@ -25,7 +25,7 @@ module.exports = {
 		publicPath: '/assets',
 		proxy: {
 			'/api': {
-				target: 'http://localhost:6288',
+				target: 'http://exchange:6288',
 				secure: false
 			}
 		}

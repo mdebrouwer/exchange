@@ -1,0 +1,18 @@
+version: '2'
+services:
+  static:
+    image: node:7.1.0
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/workspace
+    depends_on:
+      - exchange
+    entrypoint: /workspace/node_modules/.bin/webpack-dev-server --content-base static/ --host 0.0.0.0 --watch-poll
+    working_dir: /workspace
+  exchange:
+    image: centos:7
+    volumes:
+      - .:/workspace
+    entrypoint: /workspace/exchange
+    working_dir: /workspace
