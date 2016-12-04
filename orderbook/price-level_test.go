@@ -7,6 +7,7 @@ import (
 	"time"
 
 	ob "github.com/mdebrouwer/exchange/orderbook"
+	"github.com/mdebrouwer/exchange/uuid"
 )
 
 var _ = Describe("PriceLevel", func() {
@@ -29,7 +30,7 @@ var _ = Describe("PriceLevel", func() {
 		Context("If side is BUY", func() {
 			var err error
 			BeforeEach(func() {
-				err = priceLevel.InsertOrder(ob.NewOrder(time.Now(), "CPTY1", ob.BUY, 100, 1))
+				err = priceLevel.InsertOrder(ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY1", ob.BUY, 100, 1))
 			})
 			It("should not error", func() {
 				Expect(err).NotTo(HaveOccurred())
@@ -44,7 +45,7 @@ var _ = Describe("PriceLevel", func() {
 		Context("If side is SELL", func() {
 			var err error
 			BeforeEach(func() {
-				err = priceLevel.InsertOrder(ob.NewOrder(time.Now(), "CPTY1", ob.SELL, 100, 1))
+				err = priceLevel.InsertOrder(ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY1", ob.SELL, 100, 1))
 			})
 			It("should not error", func() {
 				Expect(err).NotTo(HaveOccurred())
@@ -59,7 +60,7 @@ var _ = Describe("PriceLevel", func() {
 		Context("If the Order price does not match the level", func() {
 			var err error
 			JustBeforeEach(func() {
-				err = priceLevel.InsertOrder(ob.NewOrder(time.Now(), "CPTY1", ob.SELL, 101, 1))
+				err = priceLevel.InsertOrder(ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY1", ob.SELL, 101, 1))
 			})
 			It("should error", func() {
 				Expect(err).To(HaveOccurred())
@@ -74,8 +75,8 @@ var _ = Describe("PriceLevel", func() {
 		Context("If a BUY Order is in cross", func() {
 			var err error
 			BeforeEach(func() {
-				priceLevel.InsertOrder(ob.NewOrder(time.Now(), "CPTY1", ob.SELL, 100, 1))
-				err = priceLevel.InsertOrder(ob.NewOrder(time.Now(), "CPTY2", ob.BUY, 100, 1))
+				priceLevel.InsertOrder(ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY1", ob.SELL, 100, 1))
+				err = priceLevel.InsertOrder(ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY2", ob.BUY, 100, 1))
 			})
 			It("should error", func() {
 				Expect(err).To(HaveOccurred())
@@ -84,8 +85,8 @@ var _ = Describe("PriceLevel", func() {
 		Context("If a SELL Order is in cross", func() {
 			var err error
 			BeforeEach(func() {
-				priceLevel.InsertOrder(ob.NewOrder(time.Now(), "CPTY1", ob.BUY, 100, 1))
-				err = priceLevel.InsertOrder(ob.NewOrder(time.Now(), "CPTY2", ob.SELL, 100, 1))
+				priceLevel.InsertOrder(ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY1", ob.BUY, 100, 1))
+				err = priceLevel.InsertOrder(ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY2", ob.SELL, 100, 1))
 			})
 			It("should error", func() {
 				Expect(err).To(HaveOccurred())
@@ -97,7 +98,7 @@ var _ = Describe("PriceLevel", func() {
 		var err error
 		Context("If pricelevel empty and new order is BUY", func() {
 			BeforeEach(func() {
-				order := ob.NewOrder(time.Now(), "CPTY2", ob.BUY, 100, 1)
+				order := ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY2", ob.BUY, 100, 1)
 				trades, err = priceLevel.MatchOrder(order)
 			})
 			It("should error", func() {
@@ -106,7 +107,7 @@ var _ = Describe("PriceLevel", func() {
 		})
 		Context("If pricelevel empty and new order is SELL", func() {
 			BeforeEach(func() {
-				order := ob.NewOrder(time.Now(), "CPTY2", ob.SELL, 100, 1)
+				order := ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY2", ob.SELL, 100, 1)
 				trades, err = priceLevel.MatchOrder(order)
 			})
 			It("should error", func() {
@@ -115,10 +116,10 @@ var _ = Describe("PriceLevel", func() {
 		})
 		Context("If resting BUY quotes and new order is SELL", func() {
 			BeforeEach(func() {
-				priceLevel.InsertOrder(ob.NewOrder(time.Now(), "CPTY1", ob.BUY, 100, 1))
-				priceLevel.InsertOrder(ob.NewOrder(time.Now(), "CPTY1", ob.BUY, 100, 1))
-				priceLevel.InsertOrder(ob.NewOrder(time.Now(), "CPTY1", ob.BUY, 100, 1))
-				trades, err = priceLevel.MatchOrder(ob.NewOrder(time.Now(), "CPTY2", ob.SELL, 100, 1))
+				priceLevel.InsertOrder(ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY1", ob.BUY, 100, 1))
+				priceLevel.InsertOrder(ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY1", ob.BUY, 100, 1))
+				priceLevel.InsertOrder(ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY1", ob.BUY, 100, 1))
+				trades, err = priceLevel.MatchOrder(ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY2", ob.SELL, 100, 1))
 			})
 			It("should not error", func() {
 				Expect(err).NotTo(HaveOccurred())
@@ -133,10 +134,10 @@ var _ = Describe("PriceLevel", func() {
 		})
 		Context("If resting SELL quotes and new order is BUY", func() {
 			BeforeEach(func() {
-				priceLevel.InsertOrder(ob.NewOrder(time.Now(), "CPTY1", ob.SELL, 100, 1))
-				priceLevel.InsertOrder(ob.NewOrder(time.Now(), "CPTY1", ob.SELL, 100, 1))
-				priceLevel.InsertOrder(ob.NewOrder(time.Now(), "CPTY1", ob.SELL, 100, 1))
-				trades, err = priceLevel.MatchOrder(ob.NewOrder(time.Now(), "CPTY2", ob.BUY, 100, 1))
+				priceLevel.InsertOrder(ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY1", ob.SELL, 100, 1))
+				priceLevel.InsertOrder(ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY1", ob.SELL, 100, 1))
+				priceLevel.InsertOrder(ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY1", ob.SELL, 100, 1))
+				trades, err = priceLevel.MatchOrder(ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY2", ob.BUY, 100, 1))
 			})
 			It("should not error", func() {
 				Expect(err).NotTo(HaveOccurred())
@@ -152,9 +153,9 @@ var _ = Describe("PriceLevel", func() {
 		Context("If resting BUY quote is partially filled by new SELL order", func() {
 			var quote ob.Order
 			BeforeEach(func() {
-				quote = ob.NewOrder(time.Now(), "CPTY1", ob.BUY, 100, 10)
+				quote = ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY1", ob.BUY, 100, 10)
 				priceLevel.InsertOrder(quote)
-				trades, err = priceLevel.MatchOrder(ob.NewOrder(time.Now(), "CPTY2", ob.SELL, 100, 5))
+				trades, err = priceLevel.MatchOrder(ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY2", ob.SELL, 100, 5))
 			})
 			It("should not error", func() {
 				Expect(err).NotTo(HaveOccurred())
@@ -166,15 +167,15 @@ var _ = Describe("PriceLevel", func() {
 			It("the BUY quote should still exist at the pricelevel", func() {
 				Expect(priceLevel.GetBids()[0].GetOrderId()).To(Equal(quote.GetOrderId()))
 				Expect(priceLevel.GetBids()[0].GetVersion()).To(Equal(ob.OrderVersion(2)))
-				Expect(priceLevel.GetBids()[0].GetVolume()).To(Equal(5.0))
+				Expect(priceLevel.GetBids()[0].GetVolume()).To(Equal(ob.Volume(5.0)))
 			})
 		})
 		Context("If resting SELL quote is partially filled by new BUY order", func() {
 			var quote ob.Order
 			BeforeEach(func() {
-				quote = ob.NewOrder(time.Now(), "CPTY1", ob.SELL, 100, 10)
+				quote = ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY1", ob.SELL, 100, 10)
 				priceLevel.InsertOrder(quote)
-				trades, err = priceLevel.MatchOrder(ob.NewOrder(time.Now(), "CPTY2", ob.BUY, 100, 5))
+				trades, err = priceLevel.MatchOrder(ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY2", ob.BUY, 100, 5))
 			})
 			It("should not error", func() {
 				Expect(err).NotTo(HaveOccurred())
@@ -186,7 +187,7 @@ var _ = Describe("PriceLevel", func() {
 			It("the SELL quote should still exist at the pricelevel", func() {
 				Expect(priceLevel.GetAsks()[0].GetOrderId()).To(Equal(quote.GetOrderId()))
 				Expect(priceLevel.GetAsks()[0].GetVersion()).To(Equal(ob.OrderVersion(2)))
-				Expect(priceLevel.GetAsks()[0].GetVolume()).To(Equal(5.0))
+				Expect(priceLevel.GetAsks()[0].GetVolume()).To(Equal(ob.Volume(5.0)))
 			})
 		})
 	})
@@ -198,7 +199,7 @@ var _ = Describe("PriceLevel", func() {
 		})
 		Context("If side is BUY", func() {
 			BeforeEach(func() {
-				order := ob.NewOrder(time.Now(), "CPTY2", ob.BUY, 100, 1)
+				order := ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY2", ob.BUY, 100, 1)
 				priceLevel.InsertOrder(order)
 				orderId = order.GetOrderId()
 			})
@@ -211,7 +212,7 @@ var _ = Describe("PriceLevel", func() {
 		})
 		Context("If side is SELL", func() {
 			BeforeEach(func() {
-				order := ob.NewOrder(time.Now(), "CPTY2", ob.SELL, 100, 1)
+				order := ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY2", ob.SELL, 100, 1)
 				priceLevel.InsertOrder(order)
 				orderId = order.GetOrderId()
 			})
@@ -224,7 +225,7 @@ var _ = Describe("PriceLevel", func() {
 		})
 		Context("If the Order does not exist", func() {
 			BeforeEach(func() {
-				orderId = 7
+				orderId = ob.OrderId(uuid.NewUUID())
 			})
 			It("should error", func() {
 				Expect(err).To(HaveOccurred())

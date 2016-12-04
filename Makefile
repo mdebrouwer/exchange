@@ -10,7 +10,7 @@ GO_SOURCE := $(shell $(BASH) bash -c "find . -name '*.go' | grep -v vendor")
 JS_SOURCE := $(shell $(BASH) find static -name '*.js')
 LESS_SOURCE := $(shell $(BASH) find static -name '*.less')
 
-.PHONY: clean vet test build keys
+.PHONY: clean vet test build keys gosh jssh
 
 default: vet test build
 
@@ -27,6 +27,12 @@ test: tools/ginkgo .go_deps
 	$(GOLANG) ./tools/ginkgo -r -race
 
 build: exchange
+
+gosh:
+	$(DOCKER) -t golang:1.7.3 bash
+
+jssh:
+	$(DOCKER) -t node:7.1.0 bash
 
 exchange: $(GO_SOURCE) service/bindata.go .go_deps
 	$(GOLANG) go build

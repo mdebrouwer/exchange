@@ -12,6 +12,8 @@ services:
     working_dir: /workspace
   exchange:
     image: centos:7
+    ports:
+      - "6288:6288"
     volumes:
       - .:/workspace
     entrypoint: /workspace/exchange

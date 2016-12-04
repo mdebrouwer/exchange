@@ -8,14 +8,14 @@ const e = React.createElement;
 class OrderForm extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {details: ''};
+		this.state = {price: 0};
 	}
 	handleDetailsChange(event) {
-		this.setState({details: event.target.value});
+		this.setState({price: Number.parseInt(event.target.value, 10)});
 	}
 	handleSubmit(event) {
 		event.preventDefault()
-		fetch(new Request("/api/orders"), {method: 'POST', body: JSON.stringify({order: this.state.details}), credentials: 'include'}).then((resp) => { console.log(resp) });
+		fetch(new Request("/api/orders"), {method: 'POST', body: JSON.stringify({price: this.state.price}), credentials: 'include'}).then((resp) => { console.log(resp) });
 	}
 	render() {
 		return e(
@@ -25,8 +25,8 @@ class OrderForm extends React.Component {
 				onSubmit: this.handleSubmit.bind(this)
 			},
 			[
-				e(FormControl, {key: 'details', type: 'text', placeholder: 'order details', onChange: this.handleDetailsChange.bind(this)}),
-				e(Button, {key: 'submit', type: 'submit'}, 'Submit')
+				e(FormControl, {key: 'price', type: 'text', placeholder: 'price', onChange: this.handleDetailsChange.bind(this)}),
+				e(Button, {key: 'submit', type: 'submit'}, 'Bid')
 			]
 		);
 	}

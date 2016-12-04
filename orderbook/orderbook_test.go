@@ -9,6 +9,7 @@ import (
 	"time"
 
 	ob "github.com/mdebrouwer/exchange/orderbook"
+	"github.com/mdebrouwer/exchange/uuid"
 )
 
 var _ = Describe("OrderBook", func() {
@@ -22,7 +23,7 @@ var _ = Describe("OrderBook", func() {
 			var trades []ob.Trade
 			var err error
 			BeforeEach(func() {
-				trades, err = orderbook.InsertOrder(ob.NewOrder(time.Now(), "CPTY1", ob.BUY, 100.1, 1))
+				trades, err = orderbook.InsertOrder(ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY1", ob.BUY, 100.1, 1))
 			})
 			It("should error", func() {
 				Expect(err).To(HaveOccurred())
@@ -33,7 +34,7 @@ var _ = Describe("OrderBook", func() {
 		})
 		Context("If side is Buy", func() {
 			BeforeEach(func() {
-				orderbook.InsertOrder(ob.NewOrder(time.Now(), "CPTY1", ob.BUY, 100, 1))
+				orderbook.InsertOrder(ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY1", ob.BUY, 100, 1))
 			})
 			It("should be added to the Orderbook and available from GetBestBid", func() {
 				Expect(orderbook.GetBestBid()).ShouldNot(BeNil())
@@ -50,7 +51,7 @@ var _ = Describe("OrderBook", func() {
 		})
 		Context("If side is Sell", func() {
 			BeforeEach(func() {
-				orderbook.InsertOrder(ob.NewOrder(time.Now(), "CPTY1", ob.SELL, 100, 1))
+				orderbook.InsertOrder(ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY1", ob.SELL, 100, 1))
 			})
 			It("should be added to the Orderbook and available from GetBestAsk", func() {
 				Expect(orderbook.GetBestAsk()).ShouldNot(BeNil())
@@ -69,8 +70,8 @@ var _ = Describe("OrderBook", func() {
 	Describe("Inserting a new Order to Orderbook at existing pricelevel", func() {
 		Context("If side is Buy", func() {
 			BeforeEach(func() {
-				orderbook.InsertOrder(ob.NewOrder(time.Now(), "CPTY1", ob.BUY, 100, 1))
-				orderbook.InsertOrder(ob.NewOrder(time.Now(), "CPTY2", ob.BUY, 100, 1))
+				orderbook.InsertOrder(ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY1", ob.BUY, 100, 1))
+				orderbook.InsertOrder(ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY2", ob.BUY, 100, 1))
 			})
 			It("should be added to the Orderbook and available from GetBestBid", func() {
 				Expect(orderbook.GetBestBid().GetBids()).To(HaveLen(2))
@@ -84,8 +85,8 @@ var _ = Describe("OrderBook", func() {
 		})
 		Context("If side is Sell", func() {
 			BeforeEach(func() {
-				orderbook.InsertOrder(ob.NewOrder(time.Now(), "CPTY1", ob.SELL, 100, 1))
-				orderbook.InsertOrder(ob.NewOrder(time.Now(), "CPTY2", ob.SELL, 100, 1))
+				orderbook.InsertOrder(ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY1", ob.SELL, 100, 1))
+				orderbook.InsertOrder(ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY2", ob.SELL, 100, 1))
 			})
 			It("should be added to the Orderbook and available from GetBestAsk", func() {
 				Expect(orderbook.GetBestAsk().GetAsks()).To(HaveLen(2))
@@ -99,8 +100,8 @@ var _ = Describe("OrderBook", func() {
 		})
 	})
 	Describe("Deleting an Order", func() {
-		var sellOrder = ob.NewOrder(time.Now(), "CPTY2", ob.SELL, 101, 1)
-		var buyOrder = ob.NewOrder(time.Now(), "CPTY1", ob.BUY, 99, 1)
+		var sellOrder = ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY2", ob.SELL, 101, 1)
+		var buyOrder = ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY1", ob.BUY, 99, 1)
 		BeforeEach(func() {
 			orderbook.InsertOrder(sellOrder)
 			orderbook.InsertOrder(buyOrder)
@@ -130,12 +131,12 @@ var _ = Describe("OrderBook", func() {
 		var buyOrder98 ob.Order
 		var buyOrder97 ob.Order
 		BeforeEach(func() {
-			sellOrder103 = ob.NewOrder(time.Now(), "CPTY3", ob.SELL, 103, 1)
-			sellOrder102 = ob.NewOrder(time.Now(), "CPTY2", ob.SELL, 102, 1)
-			sellOrder101 = ob.NewOrder(time.Now(), "CPTY1", ob.SELL, 101, 1)
-			buyOrder99 = ob.NewOrder(time.Now(), "CPTY4", ob.BUY, 99, 1)
-			buyOrder98 = ob.NewOrder(time.Now(), "CPTY5", ob.BUY, 98, 1)
-			buyOrder97 = ob.NewOrder(time.Now(), "CPTY6", ob.BUY, 97, 1)
+			sellOrder103 = ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY3", ob.SELL, 103, 1)
+			sellOrder102 = ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY2", ob.SELL, 102, 1)
+			sellOrder101 = ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY1", ob.SELL, 101, 1)
+			buyOrder99 = ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY4", ob.BUY, 99, 1)
+			buyOrder98 = ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY5", ob.BUY, 98, 1)
+			buyOrder97 = ob.NewOrder(uuid.NewUUID(), time.Now(), "CPTY6", ob.BUY, 97, 1)
 
 			orderbook.InsertOrder(sellOrder103)
 			orderbook.InsertOrder(sellOrder102)

@@ -7,12 +7,14 @@ import (
 	"time"
 
 	"github.com/elazarl/go-bindata-assetfs"
+	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
 
 	"github.com/mdebrouwer/exchange/auth/token"
 	"github.com/mdebrouwer/exchange/command"
 	"github.com/mdebrouwer/exchange/log"
 	"github.com/mdebrouwer/exchange/orderbook"
+	"github.com/mdebrouwer/exchange/uuid"
 )
 
 type ExchangeService struct {
@@ -69,7 +71,7 @@ func (s *ExchangeService) Stop() {
 }
 
 type Message struct {
-	Order string
+	Price orderbook.Price
 }
 
 func OrderHandler(h command.Handler) func(resp http.ResponseWriter, req *http.Request) {
@@ -81,11 +83,14 @@ func OrderHandler(h command.Handler) func(resp http.ResponseWriter, req *http.Re
 			return
 		}
 		defer req.Body.Close()
+		user := context.Get(req, "user").(token.User)
 		h.Handle(command.NewOrderCommand{
-			CounterParty: message.Order,
+			CounterParty: user.Email,
 			Side:         orderbook.BUY,
-			Price:        10,
+			Price:        message.Price,
 			Volume:       10,
+			UUID:         uuid.NewUUID(),
+			Time:         time.Now(),
 		})
 	}
 }

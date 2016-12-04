@@ -91,7 +91,7 @@ func (pl *priceLevel) MatchOrder(order Order) ([]Trade, error) {
 			sellCpty = order.GetCounterparty()
 		}
 
-		matchedVolume := math.Min(quote.GetVolume(), order.GetVolume())
+		matchedVolume := Volume(math.Min(quote.GetVolume().Value(), order.GetVolume().Value()))
 		trade := NewTrade(time.Now(), order.GetSide(), buyCpty, sellCpty, pl.price, matchedVolume)
 		trades = append(trades, trade)
 

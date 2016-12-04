@@ -4,21 +4,17 @@ import (
 	"time"
 )
 
-type TradeId int64
-
 type Trade struct {
-	tradeId       TradeId
 	creationTime  time.Time
 	aggressorSide Side
 	buyCpty       string
 	sellCpty      string
 	price         Price
-	volume        float64
+	volume        Volume
 }
 
-func NewTrade(creationTime time.Time, aggressorSide Side, buyCpty string, sellCpty string, price Price, volume float64) Trade {
+func NewTrade(creationTime time.Time, aggressorSide Side, buyCpty string, sellCpty string, price Price, volume Volume) Trade {
 	return Trade{
-		tradeId:       TradeId(creationTime.UnixNano()), //TODO: Create unique id
 		creationTime:  creationTime,
 		aggressorSide: aggressorSide,
 		buyCpty:       buyCpty,
@@ -26,10 +22,6 @@ func NewTrade(creationTime time.Time, aggressorSide Side, buyCpty string, sellCp
 		price:         price,
 		volume:        volume,
 	}
-}
-
-func (t Trade) GetTradeId() TradeId {
-	return t.tradeId
 }
 
 func (t Trade) GetCreationTime() time.Time {
@@ -40,6 +32,6 @@ func (t Trade) GetPrice() Price {
 	return t.price
 }
 
-func (t Trade) GetVolume() float64 {
+func (t Trade) GetVolume() Volume {
 	return t.volume
 }

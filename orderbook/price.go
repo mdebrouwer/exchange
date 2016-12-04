@@ -6,6 +6,12 @@ func (p Price) Value() float64 {
 	return float64(p)
 }
 
+type Volume float64
+
+func (v Volume) Value() float64 {
+	return float64(v)
+}
+
 type Prices []Price
 
 func (p Prices) Len() int {

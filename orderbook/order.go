@@ -3,9 +3,11 @@ package orderbook
 import (
 	"errors"
 	"time"
+
+	"github.com/mdebrouwer/exchange/uuid"
 )
 
-type OrderId int64
+type OrderId uuid.UUID
 type OrderVersion uint16
 
 const MaxOrderVersion = 65535
@@ -17,12 +19,12 @@ type Order struct {
 	counterparty string
 	side         Side
 	price        Price
-	volume       float64
+	volume       Volume
 }
 
-func NewOrder(creationTime time.Time, counterparty string, side Side, price Price, volume float64) Order {
+func NewOrder(id uuid.UUID, creationTime time.Time, counterparty string, side Side, price Price, volume Volume) Order {
 	return Order{
-		orderId:      OrderId(creationTime.UnixNano()), //TODO: Create unique id
+		orderId:      OrderId(id),
 		creationTime: creationTime,
 		version:      1,
 		counterparty: counterparty,
@@ -56,11 +58,11 @@ func (o Order) GetPrice() Price {
 	return o.price
 }
 
-func (o Order) GetVolume() float64 {
+func (o Order) GetVolume() Volume {
 	return o.volume
 }
 
-func (o Order) AmendVolume(volume float64) (Order, error) {
+func (o Order) AmendVolume(volume Volume) (Order, error) {
 	if o.version >= MaxOrderVersion {
 		return o, errors.New("Cannot amend volume for order: MaxOrderVersion exceeded!")
 	} else {
